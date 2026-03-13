@@ -21,7 +21,7 @@
                     }, 
                     fontFamily: { 
                         sans: ['Inter', 'sans-serif'], 
-                        title: ['Montserrat', 'sans-serif'] /* Nueva fuente sin cursivas */
+                        title: ['Montserrat', 'sans-serif'] 
                     } 
                 } 
             } 
@@ -38,48 +38,40 @@
             background-size: 40px 40px;
         }
 
-        /* TARJETAS ARCADA CON EFECTO 3D REALISTA */
+        /* TARJETAS ARCADA 3D */
         .card-arcada {
-            /* Degradado sutil para dar volumen */
             background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
             border-radius: 140px 140px 16px 16px;
             border: 1px solid #cbd5e1;
-            /* Borde inferior grueso para simular que es un objeto físico 3D */
             border-bottom: 5px solid #94a3b8; 
-            /* Sombras profundas */
-            box-shadow: 
-                0 15px 35px -5px rgba(10, 25, 47, 0.15), 
-                0 5px 15px rgba(0,0,0,0.05),
-                inset 0 2px 5px rgba(255,255,255,1); /* Brillo superior interno */
+            box-shadow: 0 15px 35px -5px rgba(10, 25, 47, 0.15), 0 5px 15px rgba(0,0,0,0.05), inset 0 2px 5px rgba(255,255,255,1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
         
-        /* Línea dorada interna */
         .card-arcada::before {
-            content: '';
-            position: absolute;
-            top: 8px; left: 8px; right: 8px; bottom: 8px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 132px 132px 10px 10px;
-            pointer-events: none;
-            transition: all 0.3s ease;
+            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 132px 132px 10px 10px;
+            pointer-events: none; transition: all 0.3s ease;
         }
 
         .card-arcada:hover {
-            transform: translateY(-8px);
-            /* Cambia el color del grosor 3D al pasar el mouse */
-            border-bottom: 5px solid #d4af37; 
-            box-shadow: 
-                0 25px 45px -10px rgba(10, 25, 47, 0.2), 
-                0 10px 20px rgba(212, 175, 55, 0.15),
-                inset 0 2px 5px rgba(255,255,255,1);
+            transform: translateY(-8px); border-bottom: 5px solid #d4af37; 
+            box-shadow: 0 25px 45px -10px rgba(10, 25, 47, 0.2), 0 10px 20px rgba(212, 175, 55, 0.15), inset 0 2px 5px rgba(255,255,255,1);
         }
 
         .card-arcada:hover::before { border-color: #d4af37; }
+
+        /* Estilos Chatbot Animación */
+        .chat-open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .chat-closed { transform: translateY(20px); opacity: 0; pointer-events: none; }
+        
+        /* Scrollbar interno del chat */
+        #chat-messages::-webkit-scrollbar { width: 4px; }
+        #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans">
+<body class="min-h-screen flex flex-col font-sans relative">
 
     <div class="bg-faeGold text-faeNavy text-[10px] py-2 px-4 text-center font-bold tracking-[0.2em] uppercase z-50 relative">
         Acta N° 4651912 INPI • Personería Jurídica Nacional
@@ -95,14 +87,14 @@
                 </div>
                 <div class="leading-tight">
                     <span class="font-title font-black text-2xl tracking-tight block text-faeNavy">F.A.E.</span>
-                    <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Federación Argentina de Educación</span>
+                    <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Federación Arg. de Educación</span>
                 </div>
             </div>
             
             <div class="hidden md:flex gap-8 text-[11px] font-bold text-faeNavy uppercase tracking-widest">
                 <a href="#registros" class="hover:text-faeGold transition-colors">Entidades Asociadas</a>
                 <a href="#avales" class="hover:text-faeGold transition-colors">Avales Institucionales</a>
-                <a href="#certificaciones" class="hover:text-faeGold transition-colors">Certificaciones</a>
+                <a href="#certificaciones" class="hover:text-faeGold transition-colors">Ecosistema Cripto</a>
             </div>
 
             <button class="md:hidden text-faeNavy"><i data-lucide="menu"></i></button>
@@ -111,18 +103,11 @@
 
     <header class="hero-pattern py-24 px-4 relative flex flex-col items-center justify-center text-center border-b-4 border-faeGold">
         <div class="relative max-w-4xl mx-auto z-10">
-            
-            <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center text-faeGold">
-                <i data-lucide="landmark" class="w-12 h-12"></i>
-            </div>
-            
-            <h1 class="font-title text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight uppercase">
-                Padrón Nacional de <br>
-                <span class="text-faeGold">Competencias Profesionales</span>
+            <div class="w-16 h-16 mx-auto mb-6 flex items-center justify-center text-faeGold"><i data-lucide="landmark" class="w-12 h-12"></i></div>
+            <h1 class="font-title text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-white leading-tight uppercase drop-shadow-md">
+                Padrón Nacional de <br><span class="text-faeGold">Competencias Profesionales</span>
             </h1>
-            
             <div class="w-24 h-[3px] bg-faeGold mx-auto my-8 opacity-80"></div>
-            
             <p class="text-slate-300 mb-8 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed tracking-wide">
                 Plataforma oficial de la Federación Argentina de Educación. Sistema centralizado para la consulta pública, validación y auditoría de Profesionales, Técnicos, Auxiliares e Instructores.
             </p>
@@ -131,19 +116,16 @@
 
     <main id="registros" class="py-20 relative z-20 bg-faeLight pt-24">
         <div class="max-w-7xl mx-auto px-4">
-            
             <div class="text-center mb-16">
                 <h2 class="font-title text-3xl font-black text-faeNavy mb-4 uppercase tracking-tight">Registros Oficiales</h2>
                 <p class="text-slate-500 text-sm tracking-wide">Seleccione la entidad correspondiente para verificar una matrícula.</p>
             </div>
-
             <div id="registros-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4">
                 <div class="col-span-full text-center py-16 text-faeNavy/50">
                     <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-4"></i>
                     <p class="text-xs font-bold uppercase tracking-widest">Accediendo a la base de datos central...</p>
                 </div>
             </div>
-
         </div>
     </main>
 
@@ -153,37 +135,153 @@
                 <h2 class="font-title text-2xl font-black text-faeNavy mb-4 uppercase tracking-tight">Entidades Avaladoras</h2>
                 <div class="w-12 h-[3px] bg-faeGold mx-auto rounded-full"></div>
             </div>
-            
             <div id="avales-container" class="flex flex-wrap justify-center gap-8 md:gap-12 items-center opacity-70 hover:opacity-100 transition-opacity">
                 <div class="text-slate-400 text-sm font-bold uppercase tracking-widest">Cargando avales...</div>
             </div>
         </div>
     </section>
 
-    <section id="certificaciones" class="py-16 bg-faeNavy text-white">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <i data-lucide="shield-check" class="w-12 h-12 text-faeGold mx-auto mb-6"></i>
-            <h2 class="font-title text-2xl font-black mb-4 uppercase tracking-wide">Seguridad Criptográfica</h2>
-            <p class="text-slate-400 max-w-2xl mx-auto text-sm leading-relaxed">
-                Cada credencial emitida por los registros de la F.A.E. cuenta con un identificador único. Las validaciones realizadas a través de este portal son de carácter oficial e inmutable.
-            </p>
+    <section id="certificaciones" class="py-24 bg-faeNavy text-white relative overflow-hidden border-t border-faeGold/20">
+        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-faeGold/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-faeGold/10 text-faeGold text-[10px] font-bold uppercase tracking-widest mb-6 border border-faeGold/30">
+                    <i data-lucide="link" class="w-3 h-3"></i> Trazabilidad Inmutable
+                </div>
+                
+                <h2 class="font-title text-3xl md:text-4xl font-black mb-6 uppercase tracking-tight leading-tight">
+                    Ecosistema Digital de <br><span class="text-faeGold">Certificaciones</span>
+                </h2>
+                
+                <p class="text-slate-300 text-sm leading-relaxed mb-10 font-light">
+                    La F.A.E. emite documentación de última generación. Cada profesional matriculado accede a un ecosistema diseñado para evitar fraudes y agilizar la validación de sus competencias.
+                </p>
+
+                <div class="space-y-8">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-faeGold shadow-[0_0_15px_rgba(212,175,55,0.1)]"><i data-lucide="qr-code" class="w-6 h-6"></i></div>
+                        <div>
+                            <h4 class="font-title font-bold text-white uppercase text-xs tracking-wider mb-1.5">Carnet y Diploma con QR</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-light">Documentos equipados con códigos de respuesta rápida para verificación en tiempo real.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-faeGold shadow-[0_0_15px_rgba(212,175,55,0.1)]"><i data-lucide="fingerprint" class="w-6 h-6"></i></div>
+                        <div>
+                            <h4 class="font-title font-bold text-white uppercase text-xs tracking-wider mb-1.5">Validación Hash Blockchain</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-light">Generación de un Hash criptográfico (TxID) que sella la identidad del profesional haciéndola incopiable.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-faeGold shadow-[0_0_15px_rgba(212,175,55,0.1)]"><i data-lucide="smartphone" class="w-6 h-6"></i></div>
+                        <div>
+                            <h4 class="font-title font-bold text-white uppercase text-xs tracking-wider mb-1.5">Billetera Virtual Integrada</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed font-light">Wallet Digital donde almacenan sus credenciales e historial de certificaciones desde el móvil.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative w-full h-[450px] flex items-center justify-center mt-10 md:mt-0 perspective-1000">
+                <div class="absolute top-0 right-4 md:right-0 w-[320px] h-[240px] bg-[#f8fafc] rounded-lg border-[6px] border-[#e2e8f0] shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 z-10 flex flex-col p-4">
+                    <div class="border-[2px] border-faeGold/60 w-full h-full p-4 flex flex-col justify-between relative">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-5"><i data-lucide="award" class="w-32 h-32 text-faeNavy"></i></div>
+                        <div class="text-center border-b border-faeGold/30 pb-3 mb-3 relative z-10">
+                            <div class="w-8 h-8 border border-faeGold rounded-full mx-auto flex items-center justify-center text-faeGold mb-1.5"><i data-lucide="book-open" class="w-4 h-4"></i></div>
+                            <div class="text-[8px] font-title font-black text-faeNavy uppercase tracking-[0.2em]">Federación Arg. de Educación</div>
+                        </div>
+                        <div class="flex-grow flex flex-col items-center justify-center space-y-2.5 relative z-10">
+                            <div class="text-[6px] text-slate-400 uppercase tracking-widest">Certifica que</div>
+                            <div class="w-3/4 h-2.5 bg-slate-300 rounded-sm"></div>
+                            <div class="text-[7px] text-faeGold font-mono mt-3">HASH: 0x71C8...3A9B</div>
+                        </div>
+                        <div class="flex justify-between items-end relative z-10">
+                            <div class="w-14 h-14 bg-white border border-slate-300 p-1 rounded"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Validacion_Diploma_FAE" alt="QR" class="opacity-90"></div>
+                            <div class="w-20 h-8 border-b border-slate-400 relative"><span class="absolute -bottom-4 left-0 text-[6px] text-slate-500 uppercase w-full text-center font-bold tracking-widest">Firma Digital</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-0 left-4 md:left-10 w-[200px] h-[320px] bg-gradient-to-br from-[#0f172a] to-[#020617] border border-white/10 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] transform -rotate-6 hover:rotate-0 transition-transform duration-500 z-20 flex flex-col overflow-hidden">
+                    <div class="bg-gradient-to-r from-faeGold to-yellow-300 h-2.5 w-full"></div>
+                    <div class="p-5 flex-grow flex flex-col">
+                        <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-2">
+                            <i data-lucide="wallet" class="text-faeGold w-5 h-5"></i>
+                            <span class="text-[8px] text-white/60 font-mono tracking-widest">BILLETERA F.A.E.</span>
+                        </div>
+                        <div class="w-20 h-20 bg-slate-800 border-2 border-faeGold rounded-xl mx-auto mb-4 overflow-hidden relative shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                            <div class="w-full h-full bg-slate-700 flex items-center justify-center"><i data-lucide="user" class="text-slate-500 w-8 h-8"></i></div>
+                            <div class="absolute bottom-0 w-full bg-faeGold/90 text-faeNavy text-[6px] text-center font-bold py-0.5">VERIFICADO</div>
+                        </div>
+                        <div class="text-center mb-5">
+                            <div class="text-[11px] font-title font-black text-white uppercase tracking-wider mb-1">PROFESIONAL</div>
+                            <div class="text-[9px] text-faeGold font-mono">MAT: 32.444.555</div>
+                        </div>
+                        <div class="mt-auto bg-white p-1.5 rounded-xl shadow-inner">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=CarnetDigitalFAE" alt="QR Carnet" class="w-full rounded-lg">
+                        </div>
+                    </div>
+                    <div class="bg-black/60 py-3 px-4 flex justify-between items-center border-t border-white/5">
+                        <span class="text-[7px] text-emerald-400 font-mono flex items-center gap-1.5"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_5px_#34d399]"></span> NODO ACTIVO</span>
+                        <i data-lucide="scan-line" class="w-4 h-4 text-slate-500"></i>
+                    </div>
+                </div>
+
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-md border border-faeGold/40 px-4 py-2.5 rounded-xl shadow-[0_0_30px_rgba(212,175,55,0.15)] z-30 flex items-center gap-3 animate-bounce" style="animation-duration: 3s;">
+                    <div class="w-8 h-8 rounded-full bg-faeGold/20 flex items-center justify-center border border-faeGold/50"><i data-lucide="lock" class="text-faeGold w-4 h-4"></i></div>
+                    <div class="flex flex-col">
+                        <span class="text-[8px] text-faeGold uppercase tracking-[0.2em] font-bold">Smart Contract</span>
+                        <span class="text-[11px] text-white font-mono tracking-wider">0x4F8A...92B1</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <footer class="bg-[#050d1a] text-slate-400 py-16 text-center border-t border-slate-800">
         <div class="max-w-4xl mx-auto px-4">
             <div class="flex items-center justify-center gap-3 text-white mb-8">
-                <i data-lucide="book-open" class="w-6 h-6 text-faeGold"></i>
-                <span class="font-title font-black text-2xl tracking-widest">F.A.E.</span>
+                <i data-lucide="book-open" class="w-6 h-6 text-faeGold"></i><span class="font-title font-black text-2xl tracking-widest">F.A.E.</span>
             </div>
-            <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed mb-6 font-light">
-                Órgano de control y regulación a nivel nacional. Las credenciales emitidas poseen respaldo jurídico y trazabilidad inmutable.
-            </p>
-            <div class="text-[10px] text-slate-600 font-sans tracking-widest uppercase">
-                Acta N° 4651912 INPI © 2026
-            </div>
+            <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed mb-6 font-light">Órgano de control y regulación a nivel nacional. Las credenciales emitidas poseen respaldo jurídico y trazabilidad inmutable.</p>
+            <div class="text-[10px] text-slate-600 font-sans tracking-widest uppercase">Acta N° 4651912 INPI © 2026</div>
         </div>
     </footer>
+
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+        <div id="chat-window" class="absolute bottom-[110px] right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 flex-col overflow-hidden chat-closed transition-all duration-300 origin-bottom-right">
+            <div class="bg-faeNavy text-white p-4 flex justify-between items-center border-b-2 border-faeGold">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-faeGold flex items-center justify-center text-faeNavy"><i data-lucide="bot" class="w-5 h-5"></i></div>
+                    <div>
+                        <div class="font-title font-bold text-sm tracking-wide">FAE Assistant (I.A.)</div>
+                        <div class="text-[9px] text-emerald-400 flex items-center gap-1 font-mono uppercase"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> En línea</div>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-slate-300 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="chat-messages" class="h-72 overflow-y-auto p-4 bg-slate-50 flex flex-col gap-4 text-sm">
+                <div class="flex items-start gap-2">
+                    <div class="w-6 h-6 rounded-full bg-faeNavy text-faeGold flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3 h-3"></i></div>
+                    <div class="bg-white border border-slate-200 p-3 rounded-xl rounded-tl-none text-slate-600 shadow-sm text-sm">
+                        Hola, soy el asistente virtual de la Federación Argentina de Educación. Mi base de conocimiento está siendo actualizada en este momento. <br><br>¿En qué puedo ayudarte?
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-white border-t border-slate-200 flex gap-2 items-center">
+                <input type="text" id="chat-input" placeholder="Escribe tu consulta aquí..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-faeNavy" onkeypress="if(event.key === 'Enter') enviarMensajeChat()">
+                <button onclick="enviarMensajeChat()" class="bg-faeNavy text-faeGold p-2 rounded-lg hover:bg-[#0f284d] transition-colors"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+
+        <a id="btn-whatsapp" href="#" target="_blank" class="w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-lg hover:bg-[#20b858] hover:scale-110 transition-all hidden">
+            <i data-lucide="message-circle" class="w-7 h-7"></i>
+        </a>
+        <button onclick="toggleChat()" class="w-14 h-14 bg-faeNavy border-2 border-faeGold text-faeGold rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all">
+            <i data-lucide="bot" class="w-7 h-7"></i>
+        </button>
+    </div>
 
     <script>
         // CONFIGURACIÓN SUPABASE
@@ -202,61 +300,85 @@
 
                 if (data && data.length > 0) {
                     container.innerHTML = data.map(reg => {
-                        const logoHtml = reg.logo_url 
-                            ? `<img src="${reg.logo_url}" alt="${reg.sigla}" class="w-20 h-20 object-contain mx-auto mb-5 drop-shadow-md">`
-                            : `<div class="w-20 h-20 rounded-full border-2 border-[#d4af37] flex items-center justify-center mx-auto mb-5 bg-slate-50"><i data-lucide="award" class="w-8 h-8 text-[#0a192f]"></i></div>`;
-
-                        return `
-                        <a href="registro.html?id=${reg.sigla}" class="card-arcada pt-14 pb-8 px-6 text-center group flex flex-col justify-between h-full">
-                            <div>
-                                ${logoHtml}
-                                <h3 class="font-title font-bold text-[#0a192f] text-lg leading-snug mb-3 group-hover:text-[#d4af37] transition-colors">${reg.nombre}</h3>
-                                <div class="w-8 h-[3px] bg-[#d4af37] mx-auto my-4 opacity-40"></div>
-                            </div>
-                            
-                            <div class="mt-auto">
-                                <p class="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-widest mb-6 bg-slate-100 py-1 px-3 rounded inline-block border border-slate-200">
-                                    ID: ${reg.sigla}
-                                </p>
-                                
-                                <div class="w-full text-[10px] font-black tracking-[0.2em] uppercase text-[#0a192f] group-hover:text-[#d4af37] flex justify-center items-center gap-2 transition-colors">
-                                    Consultar <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                                </div>
-                            </div>
-                        </a>
-                        `;
+                        const logoHtml = reg.logo_url ? `<img src="${reg.logo_url}" alt="${reg.sigla}" class="w-20 h-20 object-contain mx-auto mb-5 drop-shadow-md">` : `<div class="w-20 h-20 rounded-full border-2 border-[#d4af37] flex items-center justify-center mx-auto mb-5 bg-slate-50"><i data-lucide="award" class="w-8 h-8 text-[#0a192f]"></i></div>`;
+                        return `<a href="registro.html?id=${reg.sigla}" class="card-arcada pt-14 pb-8 px-6 text-center group flex flex-col justify-between h-full"><div>${logoHtml}<h3 class="font-title font-bold text-[#0a192f] text-lg leading-snug mb-3 group-hover:text-[#d4af37] transition-colors">${reg.nombre}</h3><div class="w-8 h-[3px] bg-[#d4af37] mx-auto my-4 opacity-40"></div></div><div class="mt-auto"><p class="text-[10px] font-sans font-bold text-slate-500 uppercase tracking-widest mb-6 bg-slate-100 py-1 px-3 rounded inline-block border border-slate-200">ID: ${reg.sigla}</p><div class="w-full text-[10px] font-black tracking-[0.2em] uppercase text-[#0a192f] group-hover:text-[#d4af37] flex justify-center items-center gap-2 transition-colors">Consultar <i data-lucide="arrow-right" class="w-3 h-3"></i></div></div></a>`;
                     }).join('');
                     lucide.createIcons();
-                } else {
-                    container.innerHTML = `<div class="col-span-full text-center py-16"><p class="text-slate-500 font-bold font-title text-lg">No hay registros habilitados.</p></div>`;
-                }
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = `<div class="col-span-full text-center text-red-700 font-bold">Error de conexión.</div>`;
-            }
+                } else { container.innerHTML = `<div class="col-span-full text-center py-16"><p class="text-slate-500 font-bold font-title text-lg">No hay registros habilitados.</p></div>`; }
+            } catch (err) {}
         }
 
-        // 2. Cargar Avales (Partners)
+        // 2. Cargar Avales
         async function cargarAvales() {
             const container = document.getElementById('avales-container');
             try {
-                const { data, error } = await db.from('partners').select('*').order('created_at', { ascending: false });
+                const { data } = await db.from('partners').select('*').order('created_at', { ascending: false });
                 if (data && data.length > 0) {
-                    container.innerHTML = data.map(p => `
-                        <div class="flex flex-col items-center gap-2 w-32 grayscale hover:grayscale-0 transition-all duration-300">
-                            <img src="${p.logo_url}" alt="${p.nombre}" class="h-16 w-auto object-contain">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center">${p.nombre}</span>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = '<div class="text-slate-400 text-sm">Próximamente...</div>';
+                    container.innerHTML = data.map(p => `<div class="flex flex-col items-center gap-2 w-32 grayscale hover:grayscale-0 transition-all duration-300"><img src="${p.logo_url}" alt="${p.nombre}" class="h-16 w-auto object-contain"><span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center">${p.nombre}</span></div>`).join('');
+                } else { container.innerHTML = '<div class="text-slate-400 text-sm">Próximamente...</div>'; }
+            } catch (err) {}
+        }
+
+        // 3. Cargar Configuración (WhatsApp)
+        async function cargarConfigGlobal() {
+            try {
+                const { data } = await db.from('configuracion_sitios_oficiales').select('whatsapp').eq('id', 1).single();
+                if (data && data.whatsapp) {
+                    const btnWa = document.getElementById('btn-whatsapp');
+                    // Limpiamos el número de espacios o signos
+                    const numLimpio = data.whatsapp.replace(/\D/g,'');
+                    btnWa.href = `https://wa.me/${numLimpio}`;
+                    btnWa.classList.remove('hidden'); // Lo mostramos solo si hay número configurado
                 }
-            } catch (err) { console.error(err); }
+            } catch(e) {}
+        }
+
+        // Lógica Simple Chatbot UI
+        function toggleChat() {
+            const chat = document.getElementById('chat-window');
+            if(chat.classList.contains('chat-closed')) {
+                chat.style.display = 'flex';
+                setTimeout(() => { chat.classList.remove('chat-closed'); chat.classList.add('chat-open'); }, 10);
+            } else {
+                chat.classList.remove('chat-open'); chat.classList.add('chat-closed');
+                setTimeout(() => { chat.style.display = 'none'; }, 300);
+            }
+        }
+
+        function enviarMensajeChat() {
+            const input = document.getElementById('chat-input');
+            const texto = input.value.trim();
+            if(!texto) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Mensaje del Usuario
+            chatMessages.innerHTML += `
+                <div class="flex items-start gap-2 justify-end mt-2">
+                    <div class="bg-faeNavy text-white p-3 rounded-xl rounded-tr-none shadow-sm text-sm max-w-[80%]">${texto}</div>
+                </div>`;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Respuesta Automática (Placeholder)
+            setTimeout(() => {
+                chatMessages.innerHTML += `
+                    <div class="flex items-start gap-2 mt-2">
+                        <div class="w-6 h-6 rounded-full bg-faeNavy text-faeGold flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3 h-3"></i></div>
+                        <div class="bg-white border border-slate-200 p-3 rounded-xl rounded-tl-none text-slate-600 shadow-sm text-sm max-w-[80%]">
+                            Recibí tu mensaje: <i>"${texto}"</i>. Como mencioné, mi base de datos de IA está siendo configurada desde el panel central. Pronto podré resolver esto por ti.
+                        </div>
+                    </div>`;
+                lucide.createIcons();
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             cargarEcosistema();
             cargarAvales();
+            cargarConfigGlobal();
+            document.getElementById('chat-window').style.display = 'none'; // ocultar chat al inicio
         });
     </script>
 </body>
