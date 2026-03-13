@@ -62,11 +62,9 @@
 
         .card-arcada:hover::before { border-color: #d4af37; }
 
-        /* Estilos Chatbot Animación */
+        /* CHATBOT UI CSS */
         .chat-open { transform: translateY(0); opacity: 1; pointer-events: auto; }
         .chat-closed { transform: translateY(20px); opacity: 0; pointer-events: none; }
-        
-        /* Scrollbar interno del chat */
         #chat-messages::-webkit-scrollbar { width: 4px; }
         #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
@@ -91,10 +89,13 @@
                 </div>
             </div>
             
-            <div class="hidden md:flex gap-8 text-[11px] font-bold text-faeNavy uppercase tracking-widest">
+            <div class="hidden md:flex items-center gap-8 text-[11px] font-bold text-faeNavy uppercase tracking-widest">
                 <a href="#registros" class="hover:text-faeGold transition-colors">Entidades Asociadas</a>
                 <a href="#avales" class="hover:text-faeGold transition-colors">Avales Institucionales</a>
                 <a href="#certificaciones" class="hover:text-faeGold transition-colors">Ecosistema Cripto</a>
+                <a href="tramite.html" class="bg-faeNavy text-faeGold border border-faeNavy hover:bg-white hover:text-faeNavy transition-all px-5 py-2.5 rounded shadow-md">
+                    Iniciar Trámite
+                </a>
             </div>
 
             <button class="md:hidden text-faeNavy"><i data-lucide="menu"></i></button>
@@ -111,6 +112,9 @@
             <p class="text-slate-300 mb-8 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed tracking-wide">
                 Plataforma oficial de la Federación Argentina de Educación. Sistema centralizado para la consulta pública, validación y auditoría de Profesionales, Técnicos, Auxiliares e Instructores.
             </p>
+            <a href="tramite.html" class="md:hidden inline-block bg-faeGold text-faeNavy font-bold uppercase tracking-widest text-xs px-6 py-3 rounded shadow-lg">
+                Iniciar Trámite de Alta
+            </a>
         </div>
     </header>
 
@@ -206,34 +210,20 @@
                 <div class="absolute bottom-0 left-4 md:left-10 w-[200px] h-[320px] bg-gradient-to-br from-[#0f172a] to-[#020617] border border-white/10 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] transform -rotate-6 hover:rotate-0 transition-transform duration-500 z-20 flex flex-col overflow-hidden">
                     <div class="bg-gradient-to-r from-faeGold to-yellow-300 h-2.5 w-full"></div>
                     <div class="p-5 flex-grow flex flex-col">
-                        <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-2">
-                            <i data-lucide="wallet" class="text-faeGold w-5 h-5"></i>
-                            <span class="text-[8px] text-white/60 font-mono tracking-widest">BILLETERA F.A.E.</span>
-                        </div>
+                        <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-2"><i data-lucide="wallet" class="text-faeGold w-5 h-5"></i><span class="text-[8px] text-white/60 font-mono tracking-widest">BILLETERA F.A.E.</span></div>
                         <div class="w-20 h-20 bg-slate-800 border-2 border-faeGold rounded-xl mx-auto mb-4 overflow-hidden relative shadow-[0_0_15px_rgba(212,175,55,0.2)]">
                             <div class="w-full h-full bg-slate-700 flex items-center justify-center"><i data-lucide="user" class="text-slate-500 w-8 h-8"></i></div>
                             <div class="absolute bottom-0 w-full bg-faeGold/90 text-faeNavy text-[6px] text-center font-bold py-0.5">VERIFICADO</div>
                         </div>
-                        <div class="text-center mb-5">
-                            <div class="text-[11px] font-title font-black text-white uppercase tracking-wider mb-1">PROFESIONAL</div>
-                            <div class="text-[9px] text-faeGold font-mono">MAT: 32.444.555</div>
-                        </div>
-                        <div class="mt-auto bg-white p-1.5 rounded-xl shadow-inner">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=CarnetDigitalFAE" alt="QR Carnet" class="w-full rounded-lg">
-                        </div>
+                        <div class="text-center mb-5"><div class="text-[11px] font-title font-black text-white uppercase tracking-wider mb-1">PROFESIONAL</div><div class="text-[9px] text-faeGold font-mono">MAT: 32.444.555</div></div>
+                        <div class="mt-auto bg-white p-1.5 rounded-xl shadow-inner"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=CarnetDigitalFAE" alt="QR Carnet" class="w-full rounded-lg"></div>
                     </div>
-                    <div class="bg-black/60 py-3 px-4 flex justify-between items-center border-t border-white/5">
-                        <span class="text-[7px] text-emerald-400 font-mono flex items-center gap-1.5"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_5px_#34d399]"></span> NODO ACTIVO</span>
-                        <i data-lucide="scan-line" class="w-4 h-4 text-slate-500"></i>
-                    </div>
+                    <div class="bg-black/60 py-3 px-4 flex justify-between items-center border-t border-white/5"><span class="text-[7px] text-emerald-400 font-mono flex items-center gap-1.5"><span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_5px_#34d399]"></span> NODO ACTIVO</span><i data-lucide="scan-line" class="w-4 h-4 text-slate-500"></i></div>
                 </div>
 
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-md border border-faeGold/40 px-4 py-2.5 rounded-xl shadow-[0_0_30px_rgba(212,175,55,0.15)] z-30 flex items-center gap-3 animate-bounce" style="animation-duration: 3s;">
                     <div class="w-8 h-8 rounded-full bg-faeGold/20 flex items-center justify-center border border-faeGold/50"><i data-lucide="lock" class="text-faeGold w-4 h-4"></i></div>
-                    <div class="flex flex-col">
-                        <span class="text-[8px] text-faeGold uppercase tracking-[0.2em] font-bold">Smart Contract</span>
-                        <span class="text-[11px] text-white font-mono tracking-wider">0x4F8A...92B1</span>
-                    </div>
+                    <div class="flex flex-col"><span class="text-[8px] text-faeGold uppercase tracking-[0.2em] font-bold">Smart Contract</span><span class="text-[11px] text-white font-mono tracking-wider">0x4F8A...92B1</span></div>
                 </div>
             </div>
         </div>
@@ -250,27 +240,27 @@
     </footer>
 
     <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-        <div id="chat-window" class="absolute bottom-[110px] right-0 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 flex-col overflow-hidden chat-closed transition-all duration-300 origin-bottom-right">
+        <div id="chat-window" class="absolute bottom-[130px] right-0 w-[300px] sm:w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 flex-col overflow-hidden chat-closed transition-all duration-300 origin-bottom-right">
             <div class="bg-faeNavy text-white p-4 flex justify-between items-center border-b-2 border-faeGold">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-faeGold flex items-center justify-center text-faeNavy"><i data-lucide="bot" class="w-5 h-5"></i></div>
                     <div>
-                        <div class="font-title font-bold text-sm tracking-wide">FAE Assistant (I.A.)</div>
-                        <div class="text-[9px] text-emerald-400 flex items-center gap-1 font-mono uppercase"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> En línea</div>
+                        <div class="font-title font-bold text-sm tracking-wide">FAE Assistant</div>
+                        <div class="text-[9px] text-emerald-400 flex items-center gap-1 font-mono uppercase"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Sistema I.A. en línea</div>
                     </div>
                 </div>
                 <button onclick="toggleChat()" class="text-slate-300 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div id="chat-messages" class="h-72 overflow-y-auto p-4 bg-slate-50 flex flex-col gap-4 text-sm">
+            <div id="chat-messages" class="h-64 overflow-y-auto p-4 bg-slate-50 flex flex-col gap-4 text-sm">
                 <div class="flex items-start gap-2">
                     <div class="w-6 h-6 rounded-full bg-faeNavy text-faeGold flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3 h-3"></i></div>
-                    <div class="bg-white border border-slate-200 p-3 rounded-xl rounded-tl-none text-slate-600 shadow-sm text-sm">
+                    <div class="bg-white border border-slate-200 p-3 rounded-xl rounded-tl-none text-slate-600 shadow-sm text-[13px]">
                         Hola, soy el asistente virtual de la Federación Argentina de Educación. Mi base de conocimiento está siendo actualizada en este momento. <br><br>¿En qué puedo ayudarte?
                     </div>
                 </div>
             </div>
             <div class="p-3 bg-white border-t border-slate-200 flex gap-2 items-center">
-                <input type="text" id="chat-input" placeholder="Escribe tu consulta aquí..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-faeNavy" onkeypress="if(event.key === 'Enter') enviarMensajeChat()">
+                <input type="text" id="chat-input" placeholder="Escribe tu consulta..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-faeNavy" onkeypress="if(event.key === 'Enter') enviarMensajeChat()">
                 <button onclick="enviarMensajeChat()" class="bg-faeNavy text-faeGold p-2 rounded-lg hover:bg-[#0f284d] transition-colors"><i data-lucide="send" class="w-4 h-4"></i></button>
             </div>
         </div>
@@ -297,7 +287,6 @@
             try {
                 const { data, error } = await db.from('instituciones').select('*').eq('activo', true).order('nombre');
                 if (error) throw error;
-
                 if (data && data.length > 0) {
                     container.innerHTML = data.map(reg => {
                         const logoHtml = reg.logo_url ? `<img src="${reg.logo_url}" alt="${reg.sigla}" class="w-20 h-20 object-contain mx-auto mb-5 drop-shadow-md">` : `<div class="w-20 h-20 rounded-full border-2 border-[#d4af37] flex items-center justify-center mx-auto mb-5 bg-slate-50"><i data-lucide="award" class="w-8 h-8 text-[#0a192f]"></i></div>`;
@@ -325,15 +314,14 @@
                 const { data } = await db.from('configuracion_sitios_oficiales').select('whatsapp').eq('id', 1).single();
                 if (data && data.whatsapp) {
                     const btnWa = document.getElementById('btn-whatsapp');
-                    // Limpiamos el número de espacios o signos
                     const numLimpio = data.whatsapp.replace(/\D/g,'');
                     btnWa.href = `https://wa.me/${numLimpio}`;
-                    btnWa.classList.remove('hidden'); // Lo mostramos solo si hay número configurado
+                    btnWa.classList.remove('hidden'); 
                 }
             } catch(e) {}
         }
 
-        // Lógica Simple Chatbot UI
+        // 4. Lógica Chatbot
         function toggleChat() {
             const chat = document.getElementById('chat-window');
             if(chat.classList.contains('chat-closed')) {
@@ -351,24 +339,12 @@
             if(!texto) return;
 
             const chatMessages = document.getElementById('chat-messages');
-            
-            // Mensaje del Usuario
-            chatMessages.innerHTML += `
-                <div class="flex items-start gap-2 justify-end mt-2">
-                    <div class="bg-faeNavy text-white p-3 rounded-xl rounded-tr-none shadow-sm text-sm max-w-[80%]">${texto}</div>
-                </div>`;
+            chatMessages.innerHTML += `<div class="flex items-start gap-2 justify-end mt-2"><div class="bg-faeNavy text-white p-3 rounded-xl rounded-tr-none shadow-sm text-[13px] max-w-[80%]">${texto}</div></div>`;
             input.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Respuesta Automática (Placeholder)
             setTimeout(() => {
-                chatMessages.innerHTML += `
-                    <div class="flex items-start gap-2 mt-2">
-                        <div class="w-6 h-6 rounded-full bg-faeNavy text-faeGold flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3 h-3"></i></div>
-                        <div class="bg-white border border-slate-200 p-3 rounded-xl rounded-tl-none text-slate-600 shadow-sm text-sm max-w-[80%]">
-                            Recibí tu mensaje: <i>"${texto}"</i>. Como mencioné, mi base de datos de IA está siendo configurada desde el panel central. Pronto podré resolver esto por ti.
-                        </div>
-                    </div>`;
+                chatMessages.innerHTML += `<div class="flex items-start gap-2 mt-2"><div class="w-6 h-6 rounded-full bg-faeNavy text-faeGold flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-3 h-3"></i></div><div class="bg-white border border-slate-200 p-3 rounded-xl rounded-tl-none text-slate-600 shadow-sm text-[13px] max-w-[80%]">Recibí tu consulta. Mi conexión con el cerebro de I.A. central está en proceso de despliegue. Pronto podré responder con precisión.</div></div>`;
                 lucide.createIcons();
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 1000);
@@ -378,7 +354,7 @@
             cargarEcosistema();
             cargarAvales();
             cargarConfigGlobal();
-            document.getElementById('chat-window').style.display = 'none'; // ocultar chat al inicio
+            document.getElementById('chat-window').style.display = 'none';
         });
     </script>
 </body>
