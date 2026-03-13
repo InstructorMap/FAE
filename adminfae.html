@@ -10,25 +10,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-blue: #3b82f6; --neon-gold: #fbbf24; --glass-bg: rgba(15, 23, 42, 0.6); --glass-border: rgba(255, 255, 255, 0.08); }
+        /* TEMA FUTURISTA / GLASSMORPHISM */
+        :root {
+            --neon-blue: #3b82f6;
+            --neon-gold: #fbbf24;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
         body { 
-            font-family: 'Outfit', sans-serif; background-color: #030712; color: #e2e8f0; 
-            background-image: radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 85% 30%, rgba(217, 119, 6, 0.1) 0%, transparent 50%);
+            font-family: 'Outfit', sans-serif; 
+            background-color: #030712; 
+            color: #e2e8f0; 
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(217, 119, 6, 0.1) 0%, transparent 50%);
             background-attachment: fixed;
         }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
-        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 12px; transition: all 0.3s ease; }
-        .glass-card:hover { background: rgba(30, 41, 59, 0.7); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); border-radius: 12px; transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(30, 41, 59, 0.7); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px);
+        }
 
-        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; transition: all 0.3s; color: #94a3b8; cursor: pointer; position: relative; overflow: hidden; }
+        .sidebar-link { 
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px; 
+            border-radius: 10px; transition: all 0.3s; color: #94a3b8; cursor: pointer; 
+            position: relative; overflow: hidden;
+        }
         .sidebar-link:hover { color: white; background: rgba(255,255,255,0.05); }
         .sidebar-link.active { color: var(--neon-gold); background: rgba(217, 119, 6, 0.1); border-left: 3px solid var(--neon-gold); }
         
         input[type="text"], input[type="number"], input[type="url"], input[type="color"], select, textarea {
             width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); 
-            border-radius: 8px; padding: 12px; color: white; outline: none; transition: all 0.3s; backdrop-filter: blur(5px);
+            border-radius: 8px; padding: 12px; color: white; outline: none; transition: all 0.3s;
+            backdrop-filter: blur(5px);
         }
         input:focus, select:focus, textarea:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
         label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
@@ -71,6 +94,12 @@
             <button onclick="showTab('identidad')" id="nav-identidad" class="sidebar-link w-full"><i data-lucide="cpu" class="w-4 h-4"></i> Parámetros Core</button>
             <button onclick="showTab('ia')" id="nav-ia" class="sidebar-link w-full text-emerald-400"><i data-lucide="bot" class="w-4 h-4"></i> Entrenamiento I.A.</button>
         </nav>
+        
+        <div class="p-4 border-t border-white/5">
+            <a href="https://fae-portal.vercel.app/" target="_blank" class="flex items-center justify-center gap-2 text-xs font-bold text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 p-3 rounded-xl transition-all border border-white/5">
+                <i data-lucide="external-link" class="w-4 h-4"></i> PORTAL PÚBLICO
+            </a>
+        </div>
     </aside>
 
     <main class="flex-1 flex flex-col min-w-0 relative">
@@ -127,21 +156,76 @@
                                     <th class="p-3 text-slate-400 font-bold">Identidad</th>
                                     <th class="p-3 text-slate-400 font-bold">Canal</th>
                                     <th class="p-3 text-slate-400 font-bold">Estatus</th>
-                                    <th class="p-3 text-slate-400 font-bold text-right">Archivos / Acción</th>
+                                    <th class="p-3 text-slate-400 font-bold text-right">Acción / Archivos</th>
                                 </tr>
                             </thead>
                             <tbody id="crm-body" class="text-slate-300 font-mono text-xs">
-                                <tr><td colspan="5" class="p-8 text-center text-slate-500">Sincronizando...</td></tr>
+                                <tr><td colspan="5" class="p-8 text-center text-slate-500"><div class="spinner mx-auto mb-2"></div> Sincronizando...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
+            <div id="view-registros" class="tab-content space-y-6">
+                <div class="glass-card p-6 border-blue-500/30 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-blue-600/10 blur-3xl rounded-full pointer-events-none"></div>
+                    <h3 class="font-black text-xl text-white mb-2 flex items-center gap-2 relative z-10"><i data-lucide="plus-hexagon" class="text-blue-400"></i> Inicializar Nuevo Registro</h3>
+                    <p class="text-xs text-slate-400 mb-6 relative z-10">Crea una entidad aislada con su propia URL de consulta pública.</p>
+                    
+                    <form id="form-registro" class="grid grid-cols-1 md:grid-cols-4 gap-5 relative z-10">
+                        <div class="col-span-1 md:col-span-2">
+                            <label>Designación Oficial</label>
+                            <input type="text" id="reg-nombre" placeholder="Ej: Registro Arg. de Estética" required>
+                        </div>
+                        <div>
+                            <label>Sigla ID (Para la URL)</label>
+                            <input type="text" id="reg-sigla" class="font-mono text-blue-400 bg-blue-950/20" placeholder="ej: rempe" required>
+                        </div>
+                        <div>
+                            <label>Hex Color</label>
+                            <div class="flex gap-2 items-center">
+                                <input type="color" id="reg-color" class="h-[46px] w-16 p-1 cursor-pointer" value="#3b82f6">
+                                <span class="text-xs font-mono text-slate-500" id="hex-display">#3b82f6</span>
+                            </div>
+                        </div>
+                        <div class="col-span-1 md:col-span-3">
+                            <label>Insignia / Logo (PNG Transparente)</label>
+                            <input type="file" id="reg-logo" class="text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-600/20 file:text-blue-400 hover:file:bg-blue-600/30" accept="image/*">
+                        </div>
+                        <div class="col-span-1 text-right flex items-end">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition shadow-[0_0_15px_rgba(59,130,246,0.4)]">DESPLEGAR REGISTRO</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <h3 class="font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Nodos Activos en la Red</h3>
+                <div id="grid-registros" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    </div>
+            </div>
+
+            <div id="modal-editar-registro" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center z-50 backdrop-blur-md">
+                <div class="glass-panel p-8 w-full max-w-lg relative border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+                    <button onclick="document.getElementById('modal-editar-registro').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+                    <h3 class="text-xl font-black mb-6 text-white flex items-center gap-2"><i data-lucide="edit-3" class="text-blue-400"></i> Editar Parámetros del Nodo</h3>
+                    <form id="form-editar-registro" class="space-y-4">
+                        <input type="hidden" id="edit-reg-id">
+                        <div><label>Designación Oficial</label><input type="text" id="edit-reg-nombre" required></div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label>Sigla ID</label><input type="text" id="edit-reg-sigla" class="font-mono text-slate-400 bg-black/50" readonly title="La sigla no se puede cambiar para evitar romper URLs"></div>
+                            <div><label>Hex Color</label><input type="color" id="edit-reg-color" class="h-[46px] w-full p-1 cursor-pointer"></div>
+                        </div>
+                        <div class="pt-4 flex justify-end">
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.4)]">GUARDAR CAMBIOS</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <div id="view-matriculados" class="tab-content space-y-6">
                 <div class="flex justify-between items-center bg-black/20 p-4 rounded-2xl border border-white/5">
                     <h3 class="text-lg font-bold">Data Lake de Profesionales</h3>
-                    <button onclick="document.getElementById('modal-alumno').classList.remove('hidden'); cargarInstitucionesSelect('al-institucion');" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600 hover:text-white font-bold py-2 px-4 rounded-xl flex items-center gap-2 text-sm transition-all"><i data-lucide="user-plus" class="w-4 h-4"></i> INYECTAR DATA</button>
+                    <button onclick="document.getElementById('modal-alumno').classList.remove('hidden'); cargarInstitucionesSelect('al-institucion');" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600 hover:text-white font-bold py-2 px-4 rounded-xl flex items-center gap-2 text-sm transition-all"><i data-lucide="user-plus" class="w-4 h-4"></i> INYECTAR DATA MANUAL</button>
                 </div>
                 <div class="glass-card p-0 overflow-hidden">
                     <table class="w-full text-left text-sm">
@@ -153,48 +237,32 @@
                 </div>
             </div>
 
-            <div id="view-registros" class="tab-content space-y-6">
-                <div class="glass-card p-6 border-blue-500/30 relative overflow-hidden">
-                    <h3 class="font-black text-xl text-white mb-2 flex items-center gap-2 relative z-10"><i data-lucide="plus-hexagon" class="text-blue-400"></i> Inicializar Nuevo Registro</h3>
-                    <p class="text-xs text-slate-400 mb-6 relative z-10">Crea una entidad aislada con su propia URL.</p>
-                    <form id="form-registro" class="grid grid-cols-1 md:grid-cols-4 gap-5 relative z-10">
-                        <div class="col-span-1 md:col-span-2"><label>Designación Oficial</label><input type="text" id="reg-nombre" required></div>
-                        <div><label>Sigla ID (Para URL)</label><input type="text" id="reg-sigla" class="font-mono text-blue-400" required></div>
-                        <div><label>Hex Color</label><input type="color" id="reg-color" class="h-[46px] w-full p-1 cursor-pointer" value="#3b82f6"></div>
-                        <div class="col-span-1 md:col-span-3"><label>Insignia / Logo</label><input type="file" id="reg-logo" class="text-sm text-slate-400" accept="image/*"></div>
-                        <div class="col-span-1 flex items-end"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition">DESPLEGAR</button></div>
-                    </form>
-                </div>
-                <h3 class="font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Nodos Activos en la Red</h3>
-                <div id="grid-registros" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
-            </div>
-
-            <div id="view-avales" class="tab-content space-y-6">
-                <div class="glass-card p-6 border-emerald-500/30">
-                    <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2"><i data-lucide="award" class="text-emerald-500"></i> Indexar Entidad</h3>
-                    <form id="form-partner" class="flex flex-col md:flex-row gap-4 items-end">
-                        <div class="flex-1 w-full"><label>Organización</label><input type="text" id="partner-nombre" required></div>
-                        <div class="flex-1 w-full"><label>Logo (PNG/JPG)</label><input type="file" id="partner-logo" class="text-xs" required></div>
-                        <button type="submit" class="bg-emerald-600/80 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition">INDEXAR</button>
-                    </form>
-                </div>
-                <div id="grid-partners" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
-            </div>
-
             <div id="view-identidad" class="tab-content space-y-6 max-w-5xl">
                 <div class="glass-card p-8">
                     <h3 class="font-black text-xl text-white mb-6 border-b border-white/10 pb-3 flex items-center gap-2"><i data-lucide="cpu" class="text-yellow-500"></i> Core Parameters</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-5">
-                            <div><label>Namespace (Título)</label><input type="text" id="conf-title"></div>
+                            <div><label>Namespace (Título Pestaña)</label><input type="text" id="conf-title" class="font-mono text-sm"></div>
                             <div><label>Hero Headline</label><input type="text" id="conf-hero-title"></div>
                             <div><label>String Botón Principal</label><input type="text" id="conf-cta"></div>
                         </div>
                         <div class="space-y-5">
-                            <div><label>Canal Soporte (WhatsApp num)</label><input type="text" id="conf-whatsapp"></div>
-                            <div><label>Tarifa Procesamiento ($)</label><input type="number" id="conf-price"></div>
-                            <div><label>Gateway Pago (MP Link)</label><input type="url" id="conf-mplink"></div>
+                            <div><label>Canal Soporte (WhatsApp num)</label><input type="text" id="conf-whatsapp" class="font-mono text-sm text-emerald-400"></div>
+                            <div><label>Tarifa Procesamiento ($)</label><input type="number" id="conf-price" class="font-mono text-yellow-400 text-lg bg-yellow-900/10"></div>
+                            <div><label>Gateway Pago (MP Link)</label><input type="url" id="conf-mplink" class="font-mono text-xs text-blue-400 bg-blue-900/10"></div>
                         </div>
+                    </div>
+                    <div class="mt-8 space-y-5 pt-6 border-t border-white/10 bg-black/20 p-6 rounded-xl">
+                        <p class="text-xs text-yellow-500 font-bold uppercase tracking-widest mb-4">Assets Visuales</p>
+                        <div>
+                            <label>Escudo FAE (Logo Header)</label>
+                            <div class="flex gap-2"><input type="text" id="conf-logo" placeholder="URL Remota" class="flex-1 text-xs font-mono text-slate-500"><label class="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-3 rounded-lg border border-white/10 transition"><i data-lucide="upload-cloud" class="w-4 h-4 text-white"></i><input type="file" id="conf-logo-upload" class="hidden" accept="image/*"></label></div>
+                        </div>
+                        <div>
+                            <label>Wallpaper Portal (Background)</label>
+                            <div class="flex gap-2"><input type="text" id="conf-banner" placeholder="URL Remota" class="flex-1 text-xs font-mono text-slate-500"><label class="cursor-pointer bg-white/10 hover:bg-white/20 px-4 py-3 rounded-lg border border-white/10 transition"><i data-lucide="upload-cloud" class="w-4 h-4 text-white"></i><input type="file" id="conf-banner-upload" class="hidden" accept="image/*"></label></div>
+                        </div>
+                        <input type="hidden" id="conf-color" value="#0f172a">
                     </div>
                 </div>
             </div>
@@ -202,19 +270,25 @@
             <div id="view-ia" class="tab-content space-y-6 max-w-5xl">
                 <div class="glass-card p-8 border-emerald-500/30">
                     <h3 class="font-black text-xl text-white mb-2 flex items-center gap-2"><i data-lucide="brain-circuit" class="text-emerald-400"></i> Entrenamiento del Asistente FAE (I.A.)</h3>
-                    <p class="text-xs text-slate-400 mb-6">Pega aquí toda la información sobre certificaciones, requisitos, precios, y cómo funciona la Federación. El chatbot del portal público leerá este texto para responderle a los usuarios.</p>
+                    <p class="text-xs text-slate-400 mb-6">Pega aquí toda la información sobre certificaciones, requisitos, precios, y cómo funciona la Federación. El chatbot leerá este texto para responder.</p>
                     
                     <div class="space-y-4">
                         <label>Base de Conocimiento (Knowledge Base)</label>
-                        <textarea id="conf-chatbot-knowledge" rows="15" class="w-full text-sm font-mono leading-relaxed bg-black/50 text-emerald-100 placeholder-emerald-900/50" placeholder="Ej: La Federación Argentina de Educación (FAE) es el órgano rector... El precio del trámite es de $5000... Los requisitos son DNI y Diploma..."></textarea>
-                        
-                        <div class="flex justify-end pt-4">
-                            <button onclick="saveConfigCloud()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center gap-2">
-                                <i data-lucide="server" class="w-4 h-4"></i> GUARDAR CEREBRO I.A.
-                            </button>
-                        </div>
+                        <textarea id="conf-chatbot-knowledge" rows="15" class="w-full text-sm font-mono leading-relaxed bg-black/50 text-emerald-100 placeholder-emerald-900/50" placeholder="Ej: La FAE es el órgano rector... El precio del trámite es..."></textarea>
                     </div>
                 </div>
+            </div>
+
+            <div id="view-avales" class="tab-content space-y-6">
+                <div class="glass-card p-6 border-emerald-500/30">
+                    <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2"><i data-lucide="award" class="text-emerald-500"></i> Indexar Entidad Acreditadora</h3>
+                    <form id="form-partner" class="flex flex-col md:flex-row gap-4 items-end">
+                        <div class="flex-1 w-full"><label>Organización</label><input type="text" id="partner-nombre" required></div>
+                        <div class="flex-1 w-full"><label>Logo (PNG/JPG)</label><input type="file" id="partner-logo" class="text-xs text-slate-400 file:bg-emerald-600/20 file:text-emerald-400 file:border-0 file:rounded file:px-3 file:py-1" required></div>
+                        <button type="submit" class="bg-emerald-600/80 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]">INDEXAR</button>
+                    </form>
+                </div>
+                <div id="grid-partners" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
             </div>
 
         </div>
@@ -224,24 +298,19 @@
         <div class="glass-panel p-8 rounded-2xl w-full max-w-lg border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative">
             <button onclick="cerrarModalAprobacion()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
             <h3 class="text-xl font-black mb-2 text-white flex items-center gap-2"><i data-lucide="check-circle" class="text-emerald-400"></i> Aprobar Trámite</h3>
-            <p class="text-xs text-slate-400 mb-6">Esta acción moverá los datos del solicitante a la base de datos oficial de profesionales.</p>
+            <p class="text-xs text-slate-400 mb-6">Mover los datos del solicitante al Padrón Nacional.</p>
             
             <form id="form-aprobar-tramite" class="space-y-4">
                 <input type="hidden" id="aprob-tramite-id">
-                
                 <div class="bg-black/30 p-4 rounded-lg border border-white/5 space-y-2 mb-4 font-mono text-xs">
                     <div class="flex justify-between"><span class="text-slate-500">Nombre:</span> <span id="aprob-nombre" class="text-white font-bold"></span></div>
                     <div class="flex justify-between"><span class="text-slate-500">DNI:</span> <span id="aprob-dni" class="text-white font-bold"></span></div>
                     <div class="flex justify-between"><span class="text-slate-500">Curso:</span> <span id="aprob-curso" class="text-yellow-400 font-bold"></span></div>
                 </div>
-
                 <div>
                     <label>Asignar al Nodo / Registro (Obligatorio)</label>
-                    <select id="aprob-institucion" class="font-mono text-xs text-emerald-400 bg-emerald-950/20" required>
-                        <option value="">Seleccione el Registro Destino...</option>
-                    </select>
+                    <select id="aprob-institucion" class="font-mono text-xs text-emerald-400 bg-emerald-950/20" required></select>
                 </div>
-
                 <div class="flex justify-end mt-6">
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)]">CONFIRMAR ALTA OFICIAL</button>
                 </div>
@@ -250,15 +319,20 @@
     </div>
 
     <div id="modal-alumno" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center z-50 backdrop-blur-md">
-        <div class="glass-panel p-8 rounded-2xl w-full max-w-lg border-blue-500/50 relative">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-lg border-blue-500/50 shadow-[0_0_30px_rgba(59,130,246,0.2)] relative">
             <button onclick="document.getElementById('modal-alumno').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
             <h3 class="text-xl font-black mb-6 text-white uppercase tracking-wider">Inyección Manual</h3>
             <form id="form-alumno" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4"><div><label>Nombre</label><input type="text" id="al-nombre" required></div><div><label>Apellido</label><input type="text" id="al-apellido" required></div></div>
-                <div><label>DNI</label><input type="text" id="al-dni" required></div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label>Nombre</label><input type="text" id="al-nombre" required></div>
+                    <div><label>Apellido</label><input type="text" id="al-apellido" required></div>
+                </div>
+                <div><label>DNI</label><input type="text" id="al-dni" class="font-mono text-yellow-400" required></div>
                 <div><label>Certificación Validada</label><input type="text" id="al-curso" required></div>
-                <div><label>Nodo / Registro Emisor</label><select id="al-institucion" required></select></div>
-                <div class="flex justify-end mt-6"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl">GUARDAR</button></div>
+                <div><label>Nodo / Registro Emisor</label><select id="al-institucion" class="font-mono text-xs" required></select></div>
+                <div class="flex justify-end mt-6">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.4)]">GUARDAR MATRÍCULA</button>
+                </div>
             </form>
         </div>
     </div>
@@ -270,13 +344,19 @@
         const db = supabase.createClient(PROJECT_URL, PUBLIC_KEY);
 
         let globalPrecio = 0;
-        let solicitudesGlobales = []; // Guardamos temporalmente las solicitudes cargadas
+        let solicitudesGlobales = [];
+
+        document.getElementById('reg-color').addEventListener('input', (e) => document.getElementById('hex-display').innerText = e.target.value);
 
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
             document.getElementById('nav-' + id).classList.add('active');
+            
+            const titles = { 'dashboard': 'Monitor Global', 'matriculados': 'Data Lake Profesionales', 'registros': 'Nodos FAE', 'avales': 'Entidades Acreditadoras', 'identidad': 'Core Parameters', 'ia': 'Entrenamiento I.A.' };
+            document.getElementById('page-title').textContent = titles[id] || id;
+
             if(id === 'matriculados') cargarAlumnos();
             if(id === 'registros') cargarRegistrosActivos();
             if(id === 'avales') cargarPartners();
@@ -287,6 +367,7 @@
             loadCloudConfig(); 
             loadCRM();          
             updateDashboardStats(); 
+            cargarInstitucionesSelect('al-institucion');
         });
 
         // --- CEREBRO Y CONFIGURACIÓN ---
@@ -295,7 +376,8 @@
                 const { data } = await db.from('configuracion_sitios_oficiales').select('*').eq('id', 1).single();
                 if (data) {
                     setVal('conf-title', data.titulo); setVal('conf-hero-title', data.hero_title); setVal('conf-cta', data.cta_text);
-                    setVal('conf-price', data.precio); setVal('conf-mplink', data.mp_link); setVal('conf-whatsapp', data.whatsapp);
+                    setVal('conf-price', data.precio); setVal('conf-mplink', data.mp_link); setVal('conf-logo', data.logo_url);
+                    setVal('conf-banner', data.banner_url); setVal('conf-whatsapp', data.whatsapp);
                     if(data.chatbot_knowledge) document.getElementById('conf-chatbot-knowledge').value = data.chatbot_knowledge;
                     globalPrecio = parseFloat(data.precio) || 0;
                 }
@@ -306,22 +388,23 @@
             const btn = document.getElementById('btn-save-cloud'); const originalText = btn.innerHTML; btn.innerHTML = "Guardando..."; btn.disabled = true;
             const configData = {
                 id: 1, titulo: document.getElementById('conf-title').value, hero_title: document.getElementById('conf-hero-title').value,
-                cta_text: document.getElementById('conf-cta').value, precio: document.getElementById('conf-price').value, 
-                mp_link: document.getElementById('conf-mplink').value, whatsapp: document.getElementById('conf-whatsapp').value,
-                chatbot_knowledge: document.getElementById('conf-chatbot-knowledge').value
+                cta_text: document.getElementById('conf-cta').value, logo_url: document.getElementById('conf-logo').value,
+                banner_url: document.getElementById('conf-banner').value, color: document.getElementById('conf-color').value,
+                precio: document.getElementById('conf-price').value, mp_link: document.getElementById('conf-mplink').value,
+                whatsapp: document.getElementById('conf-whatsapp').value, chatbot_knowledge: document.getElementById('conf-chatbot-knowledge').value
             };
             const { error } = await db.from('configuracion_sitios_oficiales').upsert(configData);
             btn.innerHTML = originalText; btn.disabled = false;
-            if(!error) { globalPrecio = parseFloat(configData.precio) || 0; updateDashboardStats(); alert("SISTEMA ACTUALIZADO OK."); } else alert("Error: " + error.message);
+            if(!error) { globalPrecio = parseFloat(configData.precio) || 0; updateDashboardStats(); alert("SISTEMA ACTUALIZADO."); } else alert("Error: " + error.message);
         }
 
-        // --- CRM Y FLUJO DE APROBACIÓN ---
+        // --- CRM Y APROBACIÓN ---
         async function loadCRM() {
             const tbody = document.getElementById('crm-body');
             try {
                 const { data: reqs } = await db.from('solicitudes_tramites').select('*').order('created_at', { ascending: false });
                 if(reqs) {
-                    solicitudesGlobales = reqs; // Guardamos en memoria
+                    solicitudesGlobales = reqs;
                     document.getElementById('dash-total-solicitudes').innerText = reqs.filter(r => r.estado !== 'APROBADO').length;
                     document.getElementById('dash-total-ingresos').innerText = "$" + new Intl.NumberFormat('es-AR').format(reqs.length * globalPrecio);
                     
@@ -352,60 +435,152 @@
             document.getElementById('aprob-nombre').innerText = solicitud.nombre + ' ' + solicitud.apellido;
             document.getElementById('aprob-dni').innerText = solicitud.dni;
             document.getElementById('aprob-curso').innerText = solicitud.curso;
-            
             cargarInstitucionesSelect('aprob-institucion');
             document.getElementById('modal-aprobar-tramite').classList.remove('hidden');
         }
 
         function cerrarModalAprobacion() { document.getElementById('modal-aprobar-tramite').classList.add('hidden'); }
 
-        // PROCESAR LA APROBACIÓN
         document.getElementById('form-aprobar-tramite').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button'); btn.innerText = "PROCESANDO..."; btn.disabled = true;
-            
+            e.preventDefault(); const btn = e.target.querySelector('button'); btn.innerText = "PROCESANDO..."; btn.disabled = true;
             try {
                 const tramiteId = document.getElementById('aprob-tramite-id').value;
                 const instId = document.getElementById('aprob-institucion').value;
-                
-                // Buscar datos de la solicitud
                 const solicitud = solicitudesGlobales.find(s => s.id == tramiteId);
                 const { data: instData } = await db.from('instituciones').select('sigla').eq('id', instId).single();
 
-                // 1. Insertar en Matriculas (El Alta)
-                const datosAlta = { 
-                    nombre: solicitud.nombre, apellido: solicitud.apellido, dni_alumno: solicitud.dni, 
-                    curso: solicitud.curso, institucion_id: instId, registro_id: instData ? instData.sigla : 'fae' 
-                };
-                const { error: errorInsert } = await db.from('matriculas').insert([datosAlta]);
-                if(errorInsert) throw errorInsert;
+                const { error: errIns } = await db.from('matriculas').insert([{ nombre: solicitud.nombre, apellido: solicitud.apellido, dni_alumno: solicitud.dni, curso: solicitud.curso, institucion_id: instId, registro_id: instData ? instData.sigla : 'fae' }]);
+                if(errIns) throw errIns;
 
-                // 2. Actualizar estado del trámite a APROBADO
-                const { error: errorUpdate } = await db.from('solicitudes_tramites').update({ estado: 'APROBADO' }).eq('id', tramiteId);
-                if(errorUpdate) throw errorUpdate;
+                const { error: errUpd } = await db.from('solicitudes_tramites').update({ estado: 'APROBADO' }).eq('id', tramiteId);
+                if(errUpd) throw errUpd;
 
                 alert("¡Profesional inyectado al Padrón Oficial correctamente!");
-                cerrarModalAprobacion();
-                loadCRM(); // Recargar tabla
-                updateDashboardStats();
-
-            } catch (err) { alert("Error en el alta: " + err.message); } finally { btn.innerText = "CONFIRMAR ALTA OFICIAL"; btn.disabled = false; }
+                cerrarModalAprobacion(); loadCRM(); updateDashboardStats();
+            } catch (err) { alert("Error: " + err.message); } finally { btn.innerText = "CONFIRMAR ALTA OFICIAL"; btn.disabled = false; }
         });
 
-        // --- FUNCIONES AUXILIARES (Registros, Selects, Alta Manual) ---
+        // --- CRUD REGISTROS COMPLETOS ---
+        async function cargarRegistrosActivos() {
+            const grid = document.getElementById('grid-registros');
+            grid.innerHTML = '<div class="col-span-full text-center py-8 text-slate-500"><div class="spinner mx-auto mb-2"></div>Sincronizando Nodos...</div>';
+            const { data } = await db.from('instituciones').select('*').order('nombre');
+            
+            if(data) {
+                document.getElementById('dash-total-registros').innerText = data.length;
+                grid.innerHTML = data.map(r => `
+                    <div class="glass-card p-5 flex flex-col relative group ${r.activo ? 'border-blue-500/20' : 'border-red-500/20 opacity-60'}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-14 h-14 rounded-xl bg-black/50 flex items-center justify-center shrink-0 border" style="border-color: ${r.color_tema || '#333'}; box-shadow: inset 0 0 10px ${r.color_tema}33">
+                                ${r.logo_url ? `<img src="${r.logo_url}" class="w-full h-full object-contain p-1.5">` : `<i data-lucide="shield" class="text-slate-400"></i>`}
+                            </div>
+                            <div class="flex gap-1.5 bg-black/40 p-1.5 rounded-lg border border-white/5">
+                                <button onclick="toggleRegistroActivo('${r.id}', ${r.activo})" class="p-1.5 rounded-md transition ${r.activo ? 'text-emerald-400 hover:bg-emerald-500/20' : 'text-slate-500 hover:bg-slate-700'}">
+                                    <i data-lucide="${r.activo ? 'eye' : 'eye-off'}" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="abrirEditarRegistro('${r.id}', '${r.nombre}', '${r.sigla}', '${r.color_tema}')" class="p-1.5 rounded-md text-blue-400 hover:bg-blue-500/20 transition">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="borrarRegistro('${r.id}')" class="p-1.5 rounded-md text-red-400 hover:bg-red-500/20 transition">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="font-black text-white truncate text-base leading-tight">${r.nombre}</h4>
+                            <p class="text-[10px] text-blue-400 font-mono uppercase mt-1 bg-blue-900/20 inline-block px-2 py-0.5 rounded border border-blue-800/30">ID: ${r.sigla || 'N/A'}</p>
+                            <div class="mt-4 flex justify-between items-center border-t border-white/5 pt-3">
+                                <span class="text-[9px] font-bold tracking-widest uppercase ${r.activo ? 'text-emerald-500' : 'text-red-500'}">${r.activo ? '● NODO EN LÍNEA' : '○ NODO APAGADO'}</span>
+                                <a href="registro.html?id=${r.sigla}" target="_blank" class="text-[10px] text-slate-400 hover:text-white transition"><i data-lucide="external-link" class="w-3 h-3"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            }
+        }
+
+        document.getElementById('form-registro').addEventListener('submit', async (e) => {
+            e.preventDefault(); const btn = e.target.querySelector('button'); btn.innerText = "..."; btn.disabled = true;
+            try {
+                const nombre = document.getElementById('reg-nombre').value; const sigla = document.getElementById('reg-sigla').value.toLowerCase().replace(/\s+/g, '');
+                const color = document.getElementById('reg-color').value; const file = document.getElementById('reg-logo').files[0];
+                let logoUrl = null;
+                if(file) {
+                    const fileName = `reg_${sigla}_${Date.now()}.${file.name.split('.').pop()}`;
+                    await db.storage.from('logos-instituciones').upload(fileName, file);
+                    logoUrl = `${PROJECT_URL}/storage/v1/object/public/logos-instituciones/${fileName}`;
+                }
+                const { error } = await db.from('instituciones').insert([{ nombre: nombre, sigla: sigla, color_tema: color, color_primario: color, logo_url: logoUrl, activo: true }]);
+                if(error) throw error;
+                e.target.reset(); document.getElementById('hex-display').innerText = '#3b82f6'; cargarRegistrosActivos(); cargarInstitucionesSelect('al-institucion'); updateDashboardStats();
+            } catch (err) { alert("Error: " + err.message); } finally { btn.innerText = "DESPLEGAR REGISTRO"; btn.disabled = false; }
+        });
+
+        async function toggleRegistroActivo(id, currentStatus) { await db.from('instituciones').update({ activo: !currentStatus }).eq('id', id); cargarRegistrosActivos(); }
+
+        function abrirEditarRegistro(id, nombre, sigla, color) {
+            document.getElementById('edit-reg-id').value = id; document.getElementById('edit-reg-nombre').value = nombre;
+            document.getElementById('edit-reg-sigla').value = sigla; document.getElementById('edit-reg-color').value = color || '#3b82f6';
+            document.getElementById('modal-editar-registro').classList.remove('hidden');
+        }
+
+        document.getElementById('form-editar-registro').addEventListener('submit', async (e) => {
+            e.preventDefault(); const btn = e.target.querySelector('button'); const original = btn.innerText; btn.innerText = "Guardando..."; btn.disabled = true;
+            try {
+                const id = document.getElementById('edit-reg-id').value; const nombre = document.getElementById('edit-reg-nombre').value; const color = document.getElementById('edit-reg-color').value;
+                await db.from('instituciones').update({ nombre: nombre, color_tema: color, color_primario: color }).eq('id', id);
+                document.getElementById('modal-editar-registro').classList.add('hidden'); cargarRegistrosActivos(); cargarInstitucionesSelect('al-institucion');
+            } catch(err) { alert("Error al actualizar: " + err.message); } finally { btn.innerText = original; btn.disabled = false; }
+        });
+
+        async function borrarRegistro(id) { if(confirm('⚠️ ¿DESTRUIR NODO? Esto no borra a los alumnos, pero elimina la página del registro.')) { await db.from('instituciones').delete().eq('id', id); cargarRegistrosActivos(); cargarInstitucionesSelect('al-institucion'); updateDashboardStats(); } }
+
+        // --- EXCEL, MATRICULADOS Y AVALES ---
+        async function descargarExcelSolicitudes() {
+            const { data: reqs } = await db.from('solicitudes_tramites').select('*').order('created_at', { ascending: false });
+            if (!reqs || !reqs.length) return alert("Sin datos.");
+            const datosExcel = reqs.map(r => ({ Fecha: new Date(r.created_at).toLocaleDateString(), Nombre: r.nombre, Apellido: r.apellido, DNI: r.dni, Curso: r.curso, Celular: r.telefono, Email: r.email, Estado: r.estado }));
+            const ws = XLSX.utils.json_to_sheet(datosExcel); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data"); XLSX.writeFile(wb, `Data_FAE_${Date.now()}.xlsx`);
+        }
+
+        async function cargarAlumnos() {
+            const lista = document.getElementById('lista-alumnos');
+            const { data } = await db.from('matriculas').select('*, instituciones(nombre, sigla)').order('created_at', { ascending: false }).limit(50);
+            if (data) lista.innerHTML = data.map(al => `<tr><td class="p-4 text-white">${al.nombre} ${al.apellido}<div class="text-[10px] text-slate-500">${al.curso}</div></td><td class="p-4 text-slate-400">${al.dni_alumno}</td><td class="p-4"><span class="bg-black/50 px-2 py-1 rounded text-blue-400 uppercase text-[10px] border border-white/5 font-bold tracking-widest">${al.instituciones?.sigla || 'FAE'}</span></td><td class="p-4 text-right"><a href="https://asari-platform.vercel.app/validador.html?id=${al.id}" target="_blank" class="text-[10px] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg hover:bg-emerald-500/10">Validador Web</a></td></tr>`).join('');
+        }
+
         async function cargarInstitucionesSelect(selectId) {
-            const s = document.getElementById(selectId);
-            const { data } = await db.from('instituciones').select('id, nombre, sigla');
+            const s = document.getElementById(selectId); const { data } = await db.from('instituciones').select('id, nombre, sigla');
             if(data) s.innerHTML = '<option value="">-- Seleccionar Nodo --</option>' + data.map(i => `<option value="${i.id}">[${(i.sigla||'').toUpperCase()}] ${i.nombre}</option>`).join('');
         }
 
         document.getElementById('form-alumno').addEventListener('submit', async (e) => {
-            e.preventDefault(); const instId = document.getElementById('al-institucion').value;
+            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); btn.disabled = true;
+            const instId = document.getElementById('al-institucion').value;
+            if(!instId) { alert("Seleccione Nodo."); btn.disabled = false; return; }
             const { data: instData } = await db.from('instituciones').select('sigla').eq('id', instId).single();
             const datos = { nombre: document.getElementById('al-nombre').value, apellido: document.getElementById('al-apellido').value, dni_alumno: document.getElementById('al-dni').value, curso: document.getElementById('al-curso').value, institucion_id: instId, registro_id: instData ? instData.sigla : 'fae' };
-            await db.from('matriculas').insert([datos]);
-            document.getElementById('modal-alumno').classList.add('hidden'); document.getElementById('form-alumno').reset(); cargarAlumnos(); updateDashboardStats();
+            const { error } = await db.from('matriculas').insert([datos]);
+            if(!error) { document.getElementById('modal-alumno').classList.add('hidden'); document.getElementById('form-alumno').reset(); cargarAlumnos(); updateDashboardStats(); }
+            btn.disabled = false;
         });
+
+        async function cargarPartners() {
+            const grid = document.getElementById('grid-partners'); const { data } = await db.from('partners').select('*').order('created_at', { ascending: false });
+            if (data) grid.innerHTML = data.map(p => `<div class="glass-card p-4 flex flex-col items-center gap-3 relative group"><button onclick="borrarPartner('${p.id}')" class="absolute top-2 right-2 text-slate-500 hover:text-red-500 opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" size="14"></i></button><div class="h-16 w-full flex items-center justify-center bg-white/5 rounded-lg p-2"><img src="${p.logo_url}" class="max-h-full object-contain"></div><span class="text-[9px] font-bold text-center text-slate-400 uppercase tracking-widest">${p.nombre}</span></div>`).join('');
+            lucide.createIcons();
+        }
+        document.getElementById('form-partner').addEventListener('submit', async (e) => {
+            e.preventDefault(); const btn = e.target.querySelector('button'); btn.innerText = "..."; btn.disabled = true;
+            try {
+                const nombre = document.getElementById('partner-nombre').value; const file = document.getElementById('partner-logo').files[0];
+                const fileName = `partner_${Date.now()}.${file.name.split('.').pop()}`; await db.storage.from('logos-partners').upload(fileName, file);
+                const logoUrl = `${PROJECT_URL}/storage/v1/object/public/logos-partners/${fileName}`;
+                await db.from('partners').insert([{ nombre, logo_url: logoUrl }]); e.target.reset(); cargarPartners();
+            } catch (err) {} finally { btn.innerText = "INDEXAR"; btn.disabled = false; }
+        });
+        async function borrarPartner(id) { if(confirm('¿Borrar?')) { await db.from('partners').delete().eq('id', id); cargarPartners(); } }
 
         async function updateDashboardStats() {
             const { count: c1 } = await db.from('matriculas').select('*', { count: 'exact', head: true });
@@ -414,24 +589,17 @@
             document.getElementById('dash-total-registros').innerText = c2 || 0;
         }
 
-        // Funciones acortadas de Registros y Avales (Mantienen misma lógica)
-        async function cargarRegistrosActivos() {
-            const grid = document.getElementById('grid-registros'); const { data } = await db.from('instituciones').select('*').order('nombre');
-            if(data) {
-                grid.innerHTML = data.map(r => `<div class="glass-card p-5 relative ${!r.activo ? 'opacity-50' : ''}"> <h4 class="font-bold text-white">${r.nombre}</h4><p class="text-xs text-blue-400">ID: ${r.sigla}</p><button onclick="borrarRegistro('${r.id}')" class="absolute top-2 right-2 text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('');
-                lucide.createIcons();
-            }
+        async function uploadImage(file, inputId) {
+            if(!file) return; const fileName = `global_${Date.now()}.${file.name.split('.').pop()}`;
+            try {
+                const { error } = await db.storage.from('logos-instituciones').upload(fileName, file);
+                if(error) throw error;
+                document.getElementById(inputId).value = `${PROJECT_URL}/storage/v1/object/public/logos-instituciones/${fileName}`;
+                alert("Upload OK. Dale a 'ACTUALIZAR SISTEMA'.");
+            } catch (err) {}
         }
-        document.getElementById('form-registro').addEventListener('submit', async (e) => { e.preventDefault(); const { error } = await db.from('instituciones').insert([{ nombre: document.getElementById('reg-nombre').value, sigla: document.getElementById('reg-sigla').value, color_tema: document.getElementById('reg-color').value, activo: true }]); e.target.reset(); cargarRegistrosActivos(); });
-        async function borrarRegistro(id) { if(confirm('Borrar?')) { await db.from('instituciones').delete().eq('id', id); cargarRegistrosActivos(); } }
-        
-        async function cargarPartners() {
-            const grid = document.getElementById('grid-partners'); const { data } = await db.from('partners').select('*');
-            if(data) grid.innerHTML = data.map(p => `<div class="glass-card p-4 relative"><button onclick="borrarPartner('${p.id}')" class="absolute top-2 right-2 text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button><img src="${p.logo_url}" class="h-10 mx-auto"><p class="text-[9px] text-center mt-2 text-white">${p.nombre}</p></div>`).join(''); lucide.createIcons();
-        }
-        document.getElementById('form-partner').addEventListener('submit', async (e) => { e.preventDefault(); const file = document.getElementById('partner-logo').files[0]; const fName = `p_${Date.now()}.${file.name.split('.').pop()}`; await db.storage.from('logos-partners').upload(fName, file); await db.from('partners').insert([{ nombre: document.getElementById('partner-nombre').value, logo_url: `${PROJECT_URL}/storage/v1/object/public/logos-partners/${fName}` }]); e.target.reset(); cargarPartners(); });
-        async function borrarPartner(id) { if(confirm('Borrar?')) { await db.from('partners').delete().eq('id', id); cargarPartners(); } }
-
+        document.getElementById('conf-banner-upload').addEventListener('change', (e) => uploadImage(e.target.files[0], 'conf-banner'));
+        document.getElementById('conf-logo-upload').addEventListener('change', (e) => uploadImage(e.target.files[0], 'conf-logo'));
         function setVal(id, v) { if(v) document.getElementById(id).value = v; }
     </script>
 </body>
