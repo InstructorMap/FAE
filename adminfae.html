@@ -2,268 +2,437 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Portal FAE · Federación Argentina de Educación</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Comando FAE · Futurista</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = { 
-            theme: { 
-                extend: { 
-                    colors: { faeDark: '#030712', faeGold: '#fbbf24', faeBlue: '#3b82f6' }, 
-                    fontFamily: { sans: ['Outfit', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] } 
-                } 
-            } 
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* TEMA FUTURISTA / GLASSMORPHISM */
+        :root { --neon-blue: #3b82f6; --neon-gold: #fbbf24; --glass-bg: rgba(15, 23, 42, 0.6); --glass-border: rgba(255, 255, 255, 0.08); }
         body { 
-            background-color: #030712; 
-            color: #e2e8f0; 
-            -webkit-tap-highlight-color: transparent;
-            background-image: 
-                radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 85% 100%, rgba(251, 191, 36, 0.05) 0%, transparent 50%);
+            font-family: 'Outfit', sans-serif; background-color: #030712; color: #e2e8f0; 
+            background-image: radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%), radial-gradient(circle at 85% 30%, rgba(217, 119, 6, 0.1) 0%, transparent 50%);
             background-attachment: fixed;
         }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        .grid-bg {
-            background-size: 40px 40px;
-            background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-        }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 12px; transition: all 0.3s ease; }
+        .glass-card:hover { background: rgba(30, 41, 59, 0.7); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
 
-        .glass-nav {
-            background: rgba(3, 7, 18, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; transition: all 0.3s; color: #94a3b8; cursor: pointer; position: relative; overflow: hidden; }
+        .sidebar-link:hover { color: white; background: rgba(255,255,255,0.05); }
+        .sidebar-link.active { color: var(--neon-gold); background: rgba(217, 119, 6, 0.1); border-left: 3px solid var(--neon-gold); }
+        
+        input[type="text"], input[type="number"], input[type="url"], input[type="color"], select, textarea {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); 
+            border-radius: 8px; padding: 12px; color: white; outline: none; transition: all 0.3s; backdrop-filter: blur(5px);
         }
+        input:focus, select:focus, textarea:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        
+        th { background: rgba(0,0,0,0.4); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+        tr { transition: background 0.2s; border-bottom: 1px solid var(--glass-border); }
+        tr:hover { background: rgba(255,255,255,0.02); }
 
-        .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            background: rgba(30, 41, 59, 0.8);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.1);
-        }
-
-        .glow-text {
-            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
-        }
-
-        /* Scrollbar Cyberpunk */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #030712; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col relative">
+<body class="h-screen flex overflow-hidden">
 
-    <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
-
-    <div class="bg-black/50 border-b border-white/5 text-slate-400 text-[9px] py-2 px-4 text-center font-mono tracking-widest uppercase z-50 relative backdrop-blur-sm">
-        <span class="text-faeGold">Acta N° 4651912 INPI</span> • Personería Jurídica Nacional • Nodos Encriptados
-    </div>
-
-    <nav class="glass-nav sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4 group cursor-default">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-800 to-black border border-white/10 flex items-center justify-center shadow-inner relative overflow-hidden">
-                    <div class="absolute inset-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <i data-lucide="hexagon" class="w-7 h-7 text-faeGold"></i>
-                </div>
-                <div class="leading-tight">
-                    <span class="font-black text-xl tracking-widest block text-white uppercase drop-shadow-md">F.A.E.</span>
-                    <span class="text-[9px] text-blue-400 font-bold uppercase tracking-[0.2em]">Federación Argentina de Educación</span>
-                </div>
+    <aside class="w-64 glass-panel m-4 mr-0 flex flex-col z-20 hidden md:flex border-r border-white/5">
+        <div class="h-28 flex flex-col justify-center px-6 border-b border-white/5 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-yellow-500"></div>
+            <div class="flex items-center gap-2 text-white font-black tracking-widest text-2xl drop-shadow-[0_0_10px_rgba(217,119,6,0.5)]">
+                <i data-lucide="hexagon" class="text-yellow-500"></i> F.A.E.
             </div>
-            
-            <div class="hidden md:flex gap-8 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                <a href="#" class="hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all">Nodos Asociados</a>
-                <a href="#" class="hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all">Certificaciones</a>
-                <a href="#" class="hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all">Red Federal</a>
-            </div>
+            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Centro de Comando</span>
         </div>
-    </nav>
-
-    <header class="py-24 px-4 relative z-10 flex flex-col items-center justify-center text-center">
-        <div class="relative max-w-4xl mx-auto">
+        
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <div class="px-2 py-2 text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-2">Métricas</div>
+            <button onclick="showTab('dashboard')" id="nav-dashboard" class="sidebar-link active w-full"><i data-lucide="activity" class="w-4 h-4"></i> Monitor Global</button>
+            <button onclick="showTab('matriculados')" id="nav-matriculados" class="sidebar-link w-full"><i data-lucide="database" class="w-4 h-4"></i> Data Profesionales</button>
             
-            <div class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-blue-950/30 text-blue-400 text-[10px] font-mono uppercase tracking-widest border border-blue-500/20 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                Infraestructura Validada en Blockchain
+            <div class="px-2 py-2 text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-6">Nodos Oficiales</div>
+            <button onclick="showTab('registros')" id="nav-registros" class="sidebar-link w-full text-blue-400"><i data-lucide="layers" class="w-4 h-4"></i> Registros y Entidades</button>
+            <button onclick="showTab('avales')" id="nav-avales" class="sidebar-link w-full"><i data-lucide="shield-check" class="w-4 h-4"></i> Acreditaciones (Index)</button>
+
+            <div class="px-2 py-2 text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-6">Sistema</div>
+            <button onclick="showTab('identidad')" id="nav-identidad" class="sidebar-link w-full"><i data-lucide="cpu" class="w-4 h-4"></i> Parámetros Core</button>
+            <button onclick="showTab('ia')" id="nav-ia" class="sidebar-link w-full text-emerald-400"><i data-lucide="bot" class="w-4 h-4"></i> Entrenamiento I.A.</button>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 relative">
+        <header class="h-20 flex justify-between items-center px-8 z-10">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-slate-400"><i data-lucide="menu"></i></button>
+                <h2 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-tight" id="page-title">Monitor Global</h2>
             </div>
-            
-            <h1 class="text-4xl md:text-6xl font-black mb-6 text-white leading-tight tracking-tight">
-                Validación Oficial de <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-faeGold via-yellow-200 to-white glow-text">
-                    Competencias Profesionales
-                </span>
-            </h1>
-            
-            <p class="text-slate-400 mb-12 text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed">
-                Plataforma centralizada de la Federación Argentina de Educación. Acceda a la red de nodos descentralizados para auditar la identidad y certificación de Profesionales, Técnicos e Instructores.
-            </p>
-        </div>
-    </header>
-
-    <main class="flex-grow py-12 relative z-20">
-        <div class="max-w-7xl mx-auto px-4">
-            
-            <div class="text-center mb-16">
-                <h2 class="text-lg font-bold text-white uppercase tracking-[0.2em] flex items-center justify-center gap-3">
-                    <i data-lucide="network" class="text-blue-500"></i> Nodos de Registro Oficial
-                </h2>
-                <div class="w-12 h-1 bg-gradient-to-r from-blue-500 to-transparent mx-auto mt-4 rounded-full"></div>
+            <div class="flex gap-3">
+                <button onclick="saveConfigCloud()" id="btn-save-cloud" class="bg-blue-600/80 hover:bg-blue-500 text-white font-bold py-2.5 px-5 rounded-xl transition-all flex items-center gap-2 text-sm backdrop-blur-md border border-blue-400/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                    <i data-lucide="save" class="w-4 h-4"></i> ACTUALIZAR SISTEMA
+                </button>
             </div>
+        </header>
 
-            <div id="registros-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <div class="col-span-full text-center py-16">
-                    <div class="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
-                    <p class="text-xs font-mono text-blue-400 uppercase tracking-widest animate-pulse">Sincronizando Data Lake...</p>
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 z-10">
+
+            <div id="view-dashboard" class="tab-content active space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="glass-card p-6 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/20 blur-2xl rounded-full"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Profesionales Red</p>
+                        <h3 class="text-4xl font-black text-white mt-2 font-mono" id="dash-total-alumnos">---</h3>
+                    </div>
+                    <div class="glass-card p-6 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-500/20 blur-2xl rounded-full"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Nodos (Registros)</p>
+                        <h3 class="text-4xl font-black text-emerald-400 mt-2 font-mono" id="dash-total-registros">---</h3>
+                    </div>
+                    <div class="glass-card p-6 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-purple-500/20 blur-2xl rounded-full"></div>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Trámites en Cola</p>
+                        <h3 class="text-4xl font-black text-purple-400 mt-2 font-mono" id="dash-total-solicitudes">0</h3>
+                    </div>
+                    <div class="glass-card p-6 relative overflow-hidden border-yellow-500/30">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-yellow-500/20 blur-2xl rounded-full"></div>
+                        <p class="text-yellow-500/80 text-xs font-bold uppercase tracking-wider">Flujo Estimado</p>
+                        <h3 class="text-3xl font-black text-yellow-400 mt-2 font-mono" id="dash-total-ingresos">$0</h3>
+                    </div>
                 </div>
 
+                <div class="glass-card p-6">
+                    <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2"><i data-lucide="satellite" class="text-blue-400"></i> Interceptación de Trámites Web</h3>
+                        <button onclick="descargarExcelSolicitudes()" class="bg-emerald-600/20 hover:bg-emerald-500/40 text-emerald-400 border border-emerald-500/30 text-xs font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-all">
+                            <i data-lucide="download-cloud" class="w-4 h-4"></i> DATA EXCEL
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="p-3 text-slate-400 font-bold">Timestamp</th>
+                                    <th class="p-3 text-slate-400 font-bold">Identidad</th>
+                                    <th class="p-3 text-slate-400 font-bold">Canal</th>
+                                    <th class="p-3 text-slate-400 font-bold">Estatus</th>
+                                    <th class="p-3 text-slate-400 font-bold text-right">Archivos / Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-body" class="text-slate-300 font-mono text-xs">
+                                <tr><td colspan="5" class="p-8 text-center text-slate-500">Sincronizando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-matriculados" class="tab-content space-y-6">
+                <div class="flex justify-between items-center bg-black/20 p-4 rounded-2xl border border-white/5">
+                    <h3 class="text-lg font-bold">Data Lake de Profesionales</h3>
+                    <button onclick="document.getElementById('modal-alumno').classList.remove('hidden'); cargarInstitucionesSelect('al-institucion');" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600 hover:text-white font-bold py-2 px-4 rounded-xl flex items-center gap-2 text-sm transition-all"><i data-lucide="user-plus" class="w-4 h-4"></i> INYECTAR DATA</button>
+                </div>
+                <div class="glass-card p-0 overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-black/40 border-b border-white/5">
+                            <tr><th class="p-4">Identidad Profesional</th><th class="p-4">DNI / Hash</th><th class="p-4">Nodo Origen</th><th class="p-4 text-right">Blockchain ID</th></tr>
+                        </thead>
+                        <tbody id="lista-alumnos" class="divide-y divide-white/5 text-slate-300 font-mono text-xs"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="view-registros" class="tab-content space-y-6">
+                <div class="glass-card p-6 border-blue-500/30 relative overflow-hidden">
+                    <h3 class="font-black text-xl text-white mb-2 flex items-center gap-2 relative z-10"><i data-lucide="plus-hexagon" class="text-blue-400"></i> Inicializar Nuevo Registro</h3>
+                    <p class="text-xs text-slate-400 mb-6 relative z-10">Crea una entidad aislada con su propia URL.</p>
+                    <form id="form-registro" class="grid grid-cols-1 md:grid-cols-4 gap-5 relative z-10">
+                        <div class="col-span-1 md:col-span-2"><label>Designación Oficial</label><input type="text" id="reg-nombre" required></div>
+                        <div><label>Sigla ID (Para URL)</label><input type="text" id="reg-sigla" class="font-mono text-blue-400" required></div>
+                        <div><label>Hex Color</label><input type="color" id="reg-color" class="h-[46px] w-full p-1 cursor-pointer" value="#3b82f6"></div>
+                        <div class="col-span-1 md:col-span-3"><label>Insignia / Logo</label><input type="file" id="reg-logo" class="text-sm text-slate-400" accept="image/*"></div>
+                        <div class="col-span-1 flex items-end"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition">DESPLEGAR</button></div>
+                    </form>
+                </div>
+                <h3 class="font-bold text-white mt-8 mb-4 border-b border-white/10 pb-2">Nodos Activos en la Red</h3>
+                <div id="grid-registros" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            </div>
+
+            <div id="view-avales" class="tab-content space-y-6">
+                <div class="glass-card p-6 border-emerald-500/30">
+                    <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2"><i data-lucide="award" class="text-emerald-500"></i> Indexar Entidad</h3>
+                    <form id="form-partner" class="flex flex-col md:flex-row gap-4 items-end">
+                        <div class="flex-1 w-full"><label>Organización</label><input type="text" id="partner-nombre" required></div>
+                        <div class="flex-1 w-full"><label>Logo (PNG/JPG)</label><input type="file" id="partner-logo" class="text-xs" required></div>
+                        <button type="submit" class="bg-emerald-600/80 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition">INDEXAR</button>
+                    </form>
+                </div>
+                <div id="grid-partners" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
+            </div>
+
+            <div id="view-identidad" class="tab-content space-y-6 max-w-5xl">
+                <div class="glass-card p-8">
+                    <h3 class="font-black text-xl text-white mb-6 border-b border-white/10 pb-3 flex items-center gap-2"><i data-lucide="cpu" class="text-yellow-500"></i> Core Parameters</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-5">
+                            <div><label>Namespace (Título)</label><input type="text" id="conf-title"></div>
+                            <div><label>Hero Headline</label><input type="text" id="conf-hero-title"></div>
+                            <div><label>String Botón Principal</label><input type="text" id="conf-cta"></div>
+                        </div>
+                        <div class="space-y-5">
+                            <div><label>Canal Soporte (WhatsApp num)</label><input type="text" id="conf-whatsapp"></div>
+                            <div><label>Tarifa Procesamiento ($)</label><input type="number" id="conf-price"></div>
+                            <div><label>Gateway Pago (MP Link)</label><input type="url" id="conf-mplink"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-ia" class="tab-content space-y-6 max-w-5xl">
+                <div class="glass-card p-8 border-emerald-500/30">
+                    <h3 class="font-black text-xl text-white mb-2 flex items-center gap-2"><i data-lucide="brain-circuit" class="text-emerald-400"></i> Entrenamiento del Asistente FAE (I.A.)</h3>
+                    <p class="text-xs text-slate-400 mb-6">Pega aquí toda la información sobre certificaciones, requisitos, precios, y cómo funciona la Federación. El chatbot del portal público leerá este texto para responderle a los usuarios.</p>
+                    
+                    <div class="space-y-4">
+                        <label>Base de Conocimiento (Knowledge Base)</label>
+                        <textarea id="conf-chatbot-knowledge" rows="15" class="w-full text-sm font-mono leading-relaxed bg-black/50 text-emerald-100 placeholder-emerald-900/50" placeholder="Ej: La Federación Argentina de Educación (FAE) es el órgano rector... El precio del trámite es de $5000... Los requisitos son DNI y Diploma..."></textarea>
+                        
+                        <div class="flex justify-end pt-4">
+                            <button onclick="saveConfigCloud()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition shadow-[0_0_15px_rgba(16,185,129,0.3)] flex items-center gap-2">
+                                <i data-lucide="server" class="w-4 h-4"></i> GUARDAR CEREBRO I.A.
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
     </main>
 
-    <section class="py-20 relative z-10 border-t border-white/5 bg-black/40">
-        <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition">
-                <i data-lucide="briefcase" class="w-8 h-8 text-blue-400 mx-auto mb-3"></i>
-                <h4 class="font-bold text-white uppercase text-xs tracking-wider">Bolsa de Trabajo</h4>
-            </div>
-            <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition">
-                <i data-lucide="book-open-check" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
-                <h4 class="font-bold text-white uppercase text-xs tracking-wider">Capacitaciones</h4>
-            </div>
-            <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition">
-                <i data-lucide="mic-2" class="w-8 h-8 text-purple-400 mx-auto mb-3"></i>
-                <h4 class="font-bold text-white uppercase text-xs tracking-wider">Congresos Web</h4>
-            </div>
-            <div class="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition">
-                <i data-lucide="building" class="w-8 h-8 text-orange-400 mx-auto mb-3"></i>
-                <h4 class="font-bold text-white uppercase text-xs tracking-wider">Consultoría</h4>
-            </div>
-        </div>
-    </section>
+    <div id="modal-aprobar-tramite" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center z-50 backdrop-blur-md">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-lg border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.2)] relative">
+            <button onclick="cerrarModalAprobacion()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+            <h3 class="text-xl font-black mb-2 text-white flex items-center gap-2"><i data-lucide="check-circle" class="text-emerald-400"></i> Aprobar Trámite</h3>
+            <p class="text-xs text-slate-400 mb-6">Esta acción moverá los datos del solicitante a la base de datos oficial de profesionales.</p>
+            
+            <form id="form-aprobar-tramite" class="space-y-4">
+                <input type="hidden" id="aprob-tramite-id">
+                
+                <div class="bg-black/30 p-4 rounded-lg border border-white/5 space-y-2 mb-4 font-mono text-xs">
+                    <div class="flex justify-between"><span class="text-slate-500">Nombre:</span> <span id="aprob-nombre" class="text-white font-bold"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">DNI:</span> <span id="aprob-dni" class="text-white font-bold"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Curso:</span> <span id="aprob-curso" class="text-yellow-400 font-bold"></span></div>
+                </div>
 
-    <footer class="bg-black text-slate-500 py-12 border-t border-white/10 text-center relative z-20">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="flex items-center justify-center gap-2 text-white mb-6 opacity-50">
-                <i data-lucide="hexagon" class="w-6 h-6"></i>
-                <span class="font-black text-lg tracking-[0.2em] uppercase">F.A.E. Core</span>
-            </div>
-            <div class="flex flex-wrap justify-center gap-4 text-[9px] uppercase font-mono tracking-widest text-slate-600 mb-8">
-                <span>Profesionales</span> • <span>Técnicos</span> • <span>Auxiliares</span> • <span>Instructores</span> • <span>Idóneos</span>
-            </div>
-            <p class="text-[11px] text-slate-600 max-w-md mx-auto leading-relaxed mb-6 font-mono">
-                [SYS_MSG]: Institución reguladora nacional. Certificaciones protegidas mediante arquitectura criptográfica y trazabilidad QR inmutable.
-            </p>
-            <div class="text-[10px] text-slate-700 font-mono">
-                Acta N° 4651912 INPI © 2026 · Powered by ASARI Platform
-            </div>
+                <div>
+                    <label>Asignar al Nodo / Registro (Obligatorio)</label>
+                    <select id="aprob-institucion" class="font-mono text-xs text-emerald-400 bg-emerald-950/20" required>
+                        <option value="">Seleccione el Registro Destino...</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)]">CONFIRMAR ALTA OFICIAL</button>
+                </div>
+            </form>
         </div>
-    </footer>
+    </div>
+
+    <div id="modal-alumno" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center z-50 backdrop-blur-md">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-lg border-blue-500/50 relative">
+            <button onclick="document.getElementById('modal-alumno').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+            <h3 class="text-xl font-black mb-6 text-white uppercase tracking-wider">Inyección Manual</h3>
+            <form id="form-alumno" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4"><div><label>Nombre</label><input type="text" id="al-nombre" required></div><div><label>Apellido</label><input type="text" id="al-apellido" required></div></div>
+                <div><label>DNI</label><input type="text" id="al-dni" required></div>
+                <div><label>Certificación Validada</label><input type="text" id="al-curso" required></div>
+                <div><label>Nodo / Registro Emisor</label><select id="al-institucion" required></select></div>
+                <div class="flex justify-end mt-6"><button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl">GUARDAR</button></div>
+            </form>
+        </div>
+    </div>
 
     <script>
-        // CONFIGURACIÓN SUPABASE (Tus credenciales reales)
+        // CONFIGURACIÓN SUPABASE
         const PROJECT_URL = 'https://vxggatcfrywyodovjwxj.supabase.co';
         const PUBLIC_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4Z2dhdGNmcnl3eW9kb3Zqd3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyMzM5MjgsImV4cCI6MjA4MzgwOTkyOH0.RZ9jhEASO6nCV8EnzrHQBhglP4G1nik9Z5osPXysGNg';
         const db = supabase.createClient(PROJECT_URL, PUBLIC_KEY);
 
-        lucide.createIcons();
+        let globalPrecio = 0;
+        let solicitudesGlobales = []; // Guardamos temporalmente las solicitudes cargadas
 
-        async function cargarEcosistema() {
-            const container = document.getElementById('registros-container');
-            
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + id).classList.add('active');
+            document.getElementById('nav-' + id).classList.add('active');
+            if(id === 'matriculados') cargarAlumnos();
+            if(id === 'registros') cargarRegistrosActivos();
+            if(id === 'avales') cargarPartners();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadCloudConfig(); 
+            loadCRM();          
+            updateDashboardStats(); 
+        });
+
+        // --- CEREBRO Y CONFIGURACIÓN ---
+        async function loadCloudConfig() {
             try {
-                // Buscamos solo los registros que el Admin encendió ('activo' = true)
-                const { data, error } = await db
-                    .from('instituciones')
-                    .select('*')
-                    .eq('activo', true)
-                    .order('nombre');
+                const { data } = await db.from('configuracion_sitios_oficiales').select('*').eq('id', 1).single();
+                if (data) {
+                    setVal('conf-title', data.titulo); setVal('conf-hero-title', data.hero_title); setVal('conf-cta', data.cta_text);
+                    setVal('conf-price', data.precio); setVal('conf-mplink', data.mp_link); setVal('conf-whatsapp', data.whatsapp);
+                    if(data.chatbot_knowledge) document.getElementById('conf-chatbot-knowledge').value = data.chatbot_knowledge;
+                    globalPrecio = parseFloat(data.precio) || 0;
+                }
+            } catch (err) {}
+        }
 
-                if (error) throw error;
+        async function saveConfigCloud() {
+            const btn = document.getElementById('btn-save-cloud'); const originalText = btn.innerHTML; btn.innerHTML = "Guardando..."; btn.disabled = true;
+            const configData = {
+                id: 1, titulo: document.getElementById('conf-title').value, hero_title: document.getElementById('conf-hero-title').value,
+                cta_text: document.getElementById('conf-cta').value, precio: document.getElementById('conf-price').value, 
+                mp_link: document.getElementById('conf-mplink').value, whatsapp: document.getElementById('conf-whatsapp').value,
+                chatbot_knowledge: document.getElementById('conf-chatbot-knowledge').value
+            };
+            const { error } = await db.from('configuracion_sitios_oficiales').upsert(configData);
+            btn.innerHTML = originalText; btn.disabled = false;
+            if(!error) { globalPrecio = parseFloat(configData.precio) || 0; updateDashboardStats(); alert("SISTEMA ACTUALIZADO OK."); } else alert("Error: " + error.message);
+        }
 
-                if (data && data.length > 0) {
-                    container.innerHTML = data.map(reg => {
-                        const colorTema = reg.color_tema || '#3b82f6';
-                        
-                        // Si tiene logo, lo pone. Si no, pone un escudo tech.
-                        const logoHtml = reg.logo_url 
-                            ? `<img src="${reg.logo_url}" alt="${reg.sigla}" class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] p-2">`
-                            : `<i data-lucide="shield" class="w-10 h-10" style="color: ${colorTema}"></i>`;
-
-                        // ENLACE MÁGICO: Redirige a registro.html inyectándole el ID por URL
-                        return `
-                        <a href="registro.html?id=${reg.sigla}" class="glass-card p-6 flex flex-col items-center text-center relative overflow-hidden group">
-                            <div class="absolute top-0 left-0 w-full h-1" style="background-color: ${colorTema}; box-shadow: 0 0 15px ${colorTema}"></div>
-                            
-                            <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                            
-                            <div class="w-20 h-20 rounded-2xl bg-black/50 border border-white/5 mb-5 flex items-center justify-center shadow-inner relative z-10">
-                                ${logoHtml}
-                            </div>
-                            
-                            <h3 class="font-bold text-white text-base mb-2 leading-tight relative z-10 w-full truncate px-2" title="${reg.nombre}">${reg.nombre}</h3>
-                            
-                            <p class="text-[10px] font-mono text-slate-400 bg-black/60 px-3 py-1 rounded uppercase tracking-widest mb-6 border border-white/5 relative z-10">
-                                ID: ${reg.sigla}
-                            </p>
-                            
-                            <div class="mt-auto w-full pt-4 border-t border-white/10 text-[11px] font-black uppercase tracking-wider flex justify-center items-center gap-2 transition-colors relative z-10 group-hover:text-white" style="color: ${colorTema}">
-                                INICIALIZAR CONSULTA <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                            </div>
-                        </a>
-                        `;
-                    }).join('');
+        // --- CRM Y FLUJO DE APROBACIÓN ---
+        async function loadCRM() {
+            const tbody = document.getElementById('crm-body');
+            try {
+                const { data: reqs } = await db.from('solicitudes_tramites').select('*').order('created_at', { ascending: false });
+                if(reqs) {
+                    solicitudesGlobales = reqs; // Guardamos en memoria
+                    document.getElementById('dash-total-solicitudes').innerText = reqs.filter(r => r.estado !== 'APROBADO').length;
+                    document.getElementById('dash-total-ingresos').innerText = "$" + new Intl.NumberFormat('es-AR').format(reqs.length * globalPrecio);
                     
-                    lucide.createIcons();
-                } else {
-                    container.innerHTML = `
-                        <div class="col-span-full text-center py-16 glass-card border-dashed">
-                            <i data-lucide="database" class="w-12 h-12 text-slate-600 mx-auto mb-4"></i>
-                            <p class="text-slate-400 font-mono text-sm uppercase">0 Nodos detectados en la red pública.</p>
-                        </div>
-                    `;
+                    tbody.innerHTML = reqs.slice(0, 50).map((r, index) => {
+                        const isAprobado = r.estado === 'APROBADO';
+                        return `
+                        <tr>
+                            <td class="p-3 text-slate-500">${new Date(r.created_at).toLocaleDateString()}</td>
+                            <td class="p-3 text-white">${r.nombre} ${r.apellido}<div class="text-[9px] text-slate-500 mt-0.5 uppercase">${r.curso}</div></td>
+                            <td class="p-3 text-slate-400">Cel: ${r.telefono}<br><span class="text-[10px] text-slate-500">${r.email}</span></td>
+                            <td class="p-3"><span class="${isAprobado ? 'bg-emerald-900/30 text-emerald-400 border-emerald-500/20' : 'bg-yellow-900/30 text-yellow-400 border-yellow-500/20'} border px-2 py-1 rounded text-[9px] uppercase tracking-widest">${r.estado || 'PENDIENTE'}</span></td>
+                            <td class="p-3 text-right flex justify-end gap-1">
+                                ${r.archivo_dni_url ? `<a href="${r.archivo_dni_url}" target="_blank" class="bg-white/5 hover:bg-blue-500/20 p-1.5 rounded inline-block text-blue-400" title="Ver DNI"><i data-lucide="id-card" class="w-4 h-4"></i></a>` : ''}
+                                ${r.archivo_diploma_url ? `<a href="${r.archivo_diploma_url}" target="_blank" class="bg-white/5 hover:bg-purple-500/20 p-1.5 rounded inline-block text-purple-400" title="Ver Diploma"><i data-lucide="file-check" class="w-4 h-4"></i></a>` : ''}
+                                ${!isAprobado ? `<button onclick="abrirModalAprobacion(${index})" class="bg-emerald-500/20 hover:bg-emerald-500 text-emerald-400 hover:text-white p-1.5 rounded inline-block ml-2 transition-all" title="Aprobar y Dar de Alta"><i data-lucide="check-circle" class="w-4 h-4"></i></button>` : ''}
+                            </td>
+                        </tr>
+                        `
+                    }).join('');
                     lucide.createIcons();
                 }
+            } catch(e) {}
+        }
 
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-red-500 bg-red-950/20 rounded-2xl border border-red-500/20">
-                        <i data-lucide="alert-triangle" class="w-8 h-8 mx-auto mb-2"></i>
-                        <p class="text-xs font-mono uppercase">System Error: Falla de conexión con la base central.</p>
-                    </div>
-                `;
+        function abrirModalAprobacion(index) {
+            const solicitud = solicitudesGlobales[index];
+            document.getElementById('aprob-tramite-id').value = solicitud.id;
+            document.getElementById('aprob-nombre').innerText = solicitud.nombre + ' ' + solicitud.apellido;
+            document.getElementById('aprob-dni').innerText = solicitud.dni;
+            document.getElementById('aprob-curso').innerText = solicitud.curso;
+            
+            cargarInstitucionesSelect('aprob-institucion');
+            document.getElementById('modal-aprobar-tramite').classList.remove('hidden');
+        }
+
+        function cerrarModalAprobacion() { document.getElementById('modal-aprobar-tramite').classList.add('hidden'); }
+
+        // PROCESAR LA APROBACIÓN
+        document.getElementById('form-aprobar-tramite').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.innerText = "PROCESANDO..."; btn.disabled = true;
+            
+            try {
+                const tramiteId = document.getElementById('aprob-tramite-id').value;
+                const instId = document.getElementById('aprob-institucion').value;
+                
+                // Buscar datos de la solicitud
+                const solicitud = solicitudesGlobales.find(s => s.id == tramiteId);
+                const { data: instData } = await db.from('instituciones').select('sigla').eq('id', instId).single();
+
+                // 1. Insertar en Matriculas (El Alta)
+                const datosAlta = { 
+                    nombre: solicitud.nombre, apellido: solicitud.apellido, dni_alumno: solicitud.dni, 
+                    curso: solicitud.curso, institucion_id: instId, registro_id: instData ? instData.sigla : 'fae' 
+                };
+                const { error: errorInsert } = await db.from('matriculas').insert([datosAlta]);
+                if(errorInsert) throw errorInsert;
+
+                // 2. Actualizar estado del trámite a APROBADO
+                const { error: errorUpdate } = await db.from('solicitudes_tramites').update({ estado: 'APROBADO' }).eq('id', tramiteId);
+                if(errorUpdate) throw errorUpdate;
+
+                alert("¡Profesional inyectado al Padrón Oficial correctamente!");
+                cerrarModalAprobacion();
+                loadCRM(); // Recargar tabla
+                updateDashboardStats();
+
+            } catch (err) { alert("Error en el alta: " + err.message); } finally { btn.innerText = "CONFIRMAR ALTA OFICIAL"; btn.disabled = false; }
+        });
+
+        // --- FUNCIONES AUXILIARES (Registros, Selects, Alta Manual) ---
+        async function cargarInstitucionesSelect(selectId) {
+            const s = document.getElementById(selectId);
+            const { data } = await db.from('instituciones').select('id, nombre, sigla');
+            if(data) s.innerHTML = '<option value="">-- Seleccionar Nodo --</option>' + data.map(i => `<option value="${i.id}">[${(i.sigla||'').toUpperCase()}] ${i.nombre}</option>`).join('');
+        }
+
+        document.getElementById('form-alumno').addEventListener('submit', async (e) => {
+            e.preventDefault(); const instId = document.getElementById('al-institucion').value;
+            const { data: instData } = await db.from('instituciones').select('sigla').eq('id', instId).single();
+            const datos = { nombre: document.getElementById('al-nombre').value, apellido: document.getElementById('al-apellido').value, dni_alumno: document.getElementById('al-dni').value, curso: document.getElementById('al-curso').value, institucion_id: instId, registro_id: instData ? instData.sigla : 'fae' };
+            await db.from('matriculas').insert([datos]);
+            document.getElementById('modal-alumno').classList.add('hidden'); document.getElementById('form-alumno').reset(); cargarAlumnos(); updateDashboardStats();
+        });
+
+        async function updateDashboardStats() {
+            const { count: c1 } = await db.from('matriculas').select('*', { count: 'exact', head: true });
+            const { count: c2 } = await db.from('instituciones').select('*', { count: 'exact', head: true });
+            document.getElementById('dash-total-alumnos').innerText = c1 || 0;
+            document.getElementById('dash-total-registros').innerText = c2 || 0;
+        }
+
+        // Funciones acortadas de Registros y Avales (Mantienen misma lógica)
+        async function cargarRegistrosActivos() {
+            const grid = document.getElementById('grid-registros'); const { data } = await db.from('instituciones').select('*').order('nombre');
+            if(data) {
+                grid.innerHTML = data.map(r => `<div class="glass-card p-5 relative ${!r.activo ? 'opacity-50' : ''}"> <h4 class="font-bold text-white">${r.nombre}</h4><p class="text-xs text-blue-400">ID: ${r.sigla}</p><button onclick="borrarRegistro('${r.id}')" class="absolute top-2 right-2 text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('');
                 lucide.createIcons();
             }
         }
+        document.getElementById('form-registro').addEventListener('submit', async (e) => { e.preventDefault(); const { error } = await db.from('instituciones').insert([{ nombre: document.getElementById('reg-nombre').value, sigla: document.getElementById('reg-sigla').value, color_tema: document.getElementById('reg-color').value, activo: true }]); e.target.reset(); cargarRegistrosActivos(); });
+        async function borrarRegistro(id) { if(confirm('Borrar?')) { await db.from('instituciones').delete().eq('id', id); cargarRegistrosActivos(); } }
+        
+        async function cargarPartners() {
+            const grid = document.getElementById('grid-partners'); const { data } = await db.from('partners').select('*');
+            if(data) grid.innerHTML = data.map(p => `<div class="glass-card p-4 relative"><button onclick="borrarPartner('${p.id}')" class="absolute top-2 right-2 text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button><img src="${p.logo_url}" class="h-10 mx-auto"><p class="text-[9px] text-center mt-2 text-white">${p.nombre}</p></div>`).join(''); lucide.createIcons();
+        }
+        document.getElementById('form-partner').addEventListener('submit', async (e) => { e.preventDefault(); const file = document.getElementById('partner-logo').files[0]; const fName = `p_${Date.now()}.${file.name.split('.').pop()}`; await db.storage.from('logos-partners').upload(fName, file); await db.from('partners').insert([{ nombre: document.getElementById('partner-nombre').value, logo_url: `${PROJECT_URL}/storage/v1/object/public/logos-partners/${fName}` }]); e.target.reset(); cargarPartners(); });
+        async function borrarPartner(id) { if(confirm('Borrar?')) { await db.from('partners').delete().eq('id', id); cargarPartners(); } }
 
-        // Arrancar
-        document.addEventListener('DOMContentLoaded', () => {
-            cargarEcosistema();
-        });
+        function setVal(id, v) { if(v) document.getElementById(id).value = v; }
     </script>
 </body>
 </html>
