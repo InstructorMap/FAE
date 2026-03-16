@@ -103,11 +103,22 @@
 
         let registroActual = null; 
 
+        // --- ALGORITMO HOMOLOGADO DE MATRÍCULA ---
+        function generarHashMatricula(dni, curso, id) { 
+            const str = String(dni) + String(curso).trim().toLowerCase() + String(id);
+            let h = 0x811c9dc5; 
+            for (let i = 0; i < str.length; i++) { 
+                h ^= str.charCodeAt(i); 
+                h = Math.imul(h, 0x01000193); 
+            } 
+            return String(Math.abs(h)).substring(0, 6).padStart(6, '1'); 
+        }
+
         async function inicializarPagina() {
             lucide.createIcons();
             const urlParams = new URLSearchParams(window.location.search);
             const sigla = urlParams.get('id');
-            const autoDni = urlParams.get('dni'); // Capturamos si viene un DNI en la URL (Para el escaneo QR)
+            const autoDni = urlParams.get('dni'); 
 
             if (!sigla) { alert("URL inválida. Regresando al portal."); window.location.href = "index.html"; return; }
 
@@ -133,10 +144,9 @@
                 document.getElementById('main-content').classList.remove('hidden');
                 document.getElementById('main-content').classList.add('flex');
 
-                // Magia Auto-Búsqueda (Si se escaneó un QR)
                 if(autoDni) {
                     document.getElementById('input-dni').value = autoDni;
-                    setTimeout(() => { document.getElementById('btn-buscar').click(); }, 400); // Disparamos el clic automático
+                    setTimeout(() => { document.getElementById('btn-buscar').click(); }, 400); 
                 }
 
             } catch (err) {
@@ -155,7 +165,7 @@
             btn.disabled = true; resContainer.classList.add('hidden');
 
             try {
-                // Filtro estricto: DNI y que pertenezca a este registro
+                // Filtro estricto
                 const { data, error } = await db.from('matriculas').select('*, instituciones(nombre)').eq('dni_alumno', dni).eq('registro_id', registroActual.sigla);
                 if (error) throw error;
 
@@ -169,22 +179,30 @@
             const container = document.getElementById('resultado-container');
             let html = `<div class="text-center mb-6"><div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-emerald-200"><i data-lucide="check-circle" class="w-4 h-4"></i> Identidad Verificada en ${registroActual.sigla.toUpperCase()}</div></div>`;
 
-            // Base URL para el auto-escaneo del QR
+            // Detectamos en qué dominio estamos alojados para generar el QR Correcto.
+            const dominioActual = window.location.hostname;
             const baseUrl = window.location.origin + window.location.pathname;
 
             registros.forEach(prof => {
                 const dniFormat = prof.dni_alumno.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                // Simulación Hash Transaccional (mismo método para todos)
                 const hashFake = `0x${Math.abs(hashString(prof.id + prof.dni_alumno)).toString(16).toUpperCase()}`;
-                const linkRegistroPropio = `${baseUrl}?id=${registroActual.sigla}&dni=${prof.dni_alumno}`;
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(linkRegistroPropio)}`;
-
-                // --- MAGIA AÑADIDA: FOTO Y MATRÍCULA ---
-                // Si la columna en Supabase se llama distinto a 'foto_url' o 'matricula', ajustarlo aquí abajo.
-                const avatarHtml = prof.foto_url 
-                    ? `<img src="${prof.foto_url}" class="w-full h-full object-cover">` 
-                    : `<i data-lucide="user" class="w-10 h-10"></i>`;
                 
-                const numMatricula = prof.matricula || String(prof.id).padStart(6, '0');
+                // MAGIA QR: Si estamos en remaep.com o similar, generamos el enlace de autobúsqueda en su propia web.
+                // Si estamos en el portal general, apuntamos al Validador Oficial de la credencial digital (Carnet)
+                let enlaceDestino = "";
+                if (dominioActual.includes('github.io') || dominioActual.includes('fae')) {
+                    enlaceDestino = `https://asari-platform.vercel.app/validador.html?id=${prof.id}`; // Validador del Carnet Oficial
+                } else {
+                    enlaceDestino = `${baseUrl}?id=${registroActual.sigla}&dni=${prof.dni_alumno}`; // Auto-búsqueda Descentralizada
+                }
+                
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(enlaceDestino)}`;
+
+                const avatarHtml = prof.foto_url ? `<img src="${prof.foto_url}" class="w-full h-full object-cover">` : `<i data-lucide="user" class="w-10 h-10"></i>`;
+                
+                // MATRÍCULA HOMOLOGADA: Usa la función copiada del Validador
+                const numMatricula = prof.matricula || generarHashMatricula(prof.dni_alumno, prof.curso, prof.id);
 
                 html += `
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden mb-6 result-enter relative">
@@ -218,7 +236,7 @@
 
                     <div class="bg-slate-50 p-4 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
                         <div class="text-[9px] font-mono text-slate-400 uppercase tracking-wider flex items-center gap-2"><i data-lucide="lock" class="w-3 h-3"></i> HASH: <span class="text-slate-600">${hashFake}</span></div>
-                        <a href="${linkRegistroPropio}" target="_blank" class="dynamic-text hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 border border-slate-200 bg-white">
+                        <a href="${enlaceDestino}" target="_blank" class="dynamic-text hover:bg-slate-200 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2 border border-slate-200 bg-white">
                             Enlace Directo <i data-lucide="external-link" class="w-3 h-3"></i>
                         </a>
                     </div>
